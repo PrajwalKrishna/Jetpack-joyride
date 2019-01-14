@@ -1,6 +1,7 @@
 #include "main.h"
 #include "timer.h"
 #include "ball.h"
+#include "platform.h"
 
 using namespace std;
 
@@ -12,10 +13,11 @@ GLFWwindow *window;
 * Customizable functions *
 **************************/
 
-Ball ball1;
+Ball player;
+Platform platform;
 
 float screen_zoom = 1, screen_center_x = 0, screen_center_y = 0;
-float camera_rotation_angle = 0;
+float camera_rotation_angle = 90;
 
 Timer t60(1.0 / 60);
 
@@ -51,20 +53,20 @@ void draw() {
     glm::mat4 MVP;  // MVP = Projection * View * Model
 
     // Scene render
-    ball1.draw(VP);
+    player.draw(VP);
+    platform.draw(VP);
 }
 
 void tick_input(GLFWwindow *window) {
     int left  = glfwGetKey(window, GLFW_KEY_LEFT);
     int right = glfwGetKey(window, GLFW_KEY_RIGHT);
     if (left) {
-        // Do something
+        printf("LEft\n");
     }
 }
 
 void tick_elements() {
-    ball1.tick();
-    camera_rotation_angle += 1;
+    // player.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -73,7 +75,8 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    ball1       = Ball(0, 0, COLOR_RED);
+    player = Ball(-4, -2, COLOR_RED);
+    platform = Platform(-4, -5, COLOR_GREEN);
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("Sample_GL.vert", "Sample_GL.frag");

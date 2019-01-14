@@ -45,6 +45,9 @@ void keyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
         case GLFW_KEY_ESCAPE:
             quit(window);
             break;
+        case GLFW_KEY_SPACE:
+            printf("Hi\n");
+            break;
         default:
             break;
         }

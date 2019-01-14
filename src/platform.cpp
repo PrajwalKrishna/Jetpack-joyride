@@ -1,7 +1,7 @@
-#include "ball.h"
+#include "platform.h"
 #include "main.h"
 
-Ball::Ball(float x, float y, color_t color) {
+Platform::Platform(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     speed = 1;
@@ -9,21 +9,21 @@ Ball::Ball(float x, float y, color_t color) {
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
          0.0f, 0.0f, 0.0f, // triangle 1 : begin
-         2.0f, 3.0f, 0.0f,
-         2.0f, 0.0f, 0.0f, // triangle 1 : end
+         8.0f, 3.0f, 0.0f,
+         8.0f, 0.0f, 0.0f, // triangle 1 : end
          0.0f, 3.0f, 0.0f, // triangle 2 : begin
-         2.0f, 3.0f, 0.0f,
+         8.0f, 3.0f, 0.0f,
          0.0f, 0.0f, 0.0f, // triangle 2 : end
     };
 
     this->object = create3DObject(GL_TRIANGLES, 12*3, vertex_buffer_data, color, GL_FILL);
 }
 
-void Ball::draw(glm::mat4 VP) {
+void Platform::draw(glm::mat4 VP) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
     glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
-    // No need as coords centered at 0, 0, 0 of cube arouund which we waant to rotate
+    // No need as coords centered at 0, 0, 0 of  around which we waant to rotate
     // rotate          = rotate * glm::translate(glm::vec3(0, -0.6, 0));
     Matrices.model *= (translate * rotate);
     glm::mat4 MVP = VP * Matrices.model;
@@ -31,11 +31,11 @@ void Ball::draw(glm::mat4 VP) {
     draw3DObject(this->object);
 }
 
-void Ball::set_position(float x, float y) {
+void Platform::set_position(float x, float y) {
     this->position = glm::vec3(x, y, 0);
 }
 
-void Ball::tick() {
+void Platform::tick() {
     this->rotation += speed;
     // this->position.x -= speed;
     // this->position.y -= speed;
