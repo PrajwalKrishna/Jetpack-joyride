@@ -46,7 +46,7 @@ void keyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
             quit(window);
             break;
         case GLFW_KEY_SPACE:
-            printf("Hi\n");
+            printf("Space\n");
             break;
         default:
             break;

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "timer.h"
 #include "ball.h"
+#include "coin.h"
 #include "platform.h"
 
 using namespace std;
@@ -14,9 +15,11 @@ GLFWwindow *window;
 **************************/
 
 Ball player;
+int points = 0;
 Platform platform;
+Coin coin[100];
 
-float screen_zoom = 1, screen_center_x = 0, screen_center_y = 0;
+float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
 
 Timer t60(1.0 / 60);
@@ -55,18 +58,31 @@ void draw() {
     // Scene render
     player.draw(VP);
     platform.draw(VP);
+    for(int i=0;i<=20;++i)
+        coin[i].draw(VP);
 }
 
 void tick_input(GLFWwindow *window) {
     int left  = glfwGetKey(window, GLFW_KEY_LEFT);
     int right = glfwGetKey(window, GLFW_KEY_RIGHT);
+    int space = glfwGetKey(window, GLFW_KEY_SPACE);
     if (left) {
-        printf("LEft\n");
+        // printf("Left\n");
+        player.move(0);
+    }
+    if (right) {
+      player.move(1);
+    }
+    if(space) {
+      // printf("Space\n");
+      player.tickUp();
     }
 }
 
 void tick_elements() {
-    // player.tick();
+    player.tick();
+    for(int i=0;i<=20;++i)
+        coin[i].tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -75,8 +91,13 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    player = Ball(-4, -2, COLOR_RED);
-    platform = Platform(-4, -5, COLOR_GREEN);
+    player = Ball(-8, -5, COLOR_RED);
+    platform = Platform(-8, -8, COLOR_GREEN);
+    for(int i=0;i<=20;++i)
+    {
+        int random = rand()%5;
+        coin[i] = Coin(2.0+i*4,random- 2.0,COLOR_YELLOW);
+    }
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("Sample_GL.vert", "Sample_GL.frag");
@@ -120,6 +141,19 @@ int main(int argc, char **argv) {
             // Swap Frame Buffer in double buffering
             glfwSwapBuffers(window);
 
+            // Detect coin capture
+            bounding_box_t plyr_c = {player.position.x,player.position.y, 1.5f, 4.0f};
+            for(int i=0; i<20 ; i++)
+            {
+                bounding_box_t coin_c = {coin[i].position.x,coin[i].position.y,0.6f,0.4f};
+                if(detect_collision(plyr_c,coin_c))
+                {
+                    coin[i].position.y -= 100;
+                    points++;
+                    printf("Points earned = %d\n",points);
+                }
+            }
+
             tick_elements();
             tick_input(window);
         }
@@ -132,8 +166,8 @@ int main(int argc, char **argv) {
 }
 
 bool detect_collision(bounding_box_t a, bounding_box_t b) {
-    return (abs(a.x - b.x) * 2 < (a.width + b.width)) &&
-           (abs(a.y - b.y) * 2 < (a.height + b.height));
+    return (abs(a.x - b.x) * 1 < (a.width + b.width)) &&
+           (abs(a.y - b.y) * 1 < (a.height + b.height));
 }
 
 void reset_screen() {
