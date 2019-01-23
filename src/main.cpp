@@ -4,6 +4,9 @@
 #include "platform.h"
 #include "player.h"
 #include "timer.h"
+#include <unistd.h>
+
+#include "laser.h"
 
 using namespace std;
 
@@ -19,6 +22,8 @@ Player player;
 int points = 0;
 Platform platform;
 Coin coin[100];
+
+Laser laser;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
@@ -59,6 +64,7 @@ void draw() {
     // Scene render
     player.draw(VP);
     platform.draw(VP);
+    laser.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -84,6 +90,8 @@ void tick_elements() {
     player.tick();
     for(int i=0;i<=20;++i)
         coin[i].tick();
+
+    laser.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -94,6 +102,7 @@ void initGL(GLFWwindow *window, int width, int height) {
 
     player = Player(-7, FLOOR + 2.5f, COLOR_RED);
     platform = Platform(-8, FLOOR, COLOR_GREEN);
+    laser = Laser(4, FLOOR + 9, M_PI/2, COLOR_GREEN);
     for(int i=0;i<=20;++i)
     {
         int random = rand()%5;
@@ -142,12 +151,15 @@ int main(int argc, char **argv) {
             // Swap Frame Buffer in double buffering
             glfwSwapBuffers(window);
 
+            // Detect collision from Laser
+                laser.collision(player.box());
+
             // Detect coin capture
             for(int i=0; i<20 ; i++)
             {
                 if(detect_collision(player.box(),coin[i].box()))
                 {
-                    coin[i].position.y -= 100;
+                    coin[i].position.y -= 200;
                     points++;
                     printf("Points earned = %d\n",points);
                 }
@@ -159,6 +171,8 @@ int main(int argc, char **argv) {
 
         // Poll for Keyboard and mouse events
         glfwPollEvents();
+        // Sleep for CPU freeup
+        usleep(12000);
     }
 
     quit(window);
