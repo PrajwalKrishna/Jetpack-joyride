@@ -1,8 +1,9 @@
 #include "main.h"
-#include "timer.h"
-#include "ball.h"
 #include "coin.h"
+#include "constant.h"
 #include "platform.h"
+#include "player.h"
+#include "timer.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ GLFWwindow *window;
 * Customizable functions *
 **************************/
 
-Ball player;
+Player player;
 int points = 0;
 Platform platform;
 Coin coin[100];
@@ -58,6 +59,8 @@ void draw() {
     // Scene render
     player.draw(VP);
     platform.draw(VP);
+
+    // Coin render
     for(int i=0;i<=20;++i)
         coin[i].draw(VP);
 }
@@ -67,14 +70,12 @@ void tick_input(GLFWwindow *window) {
     int right = glfwGetKey(window, GLFW_KEY_RIGHT);
     int space = glfwGetKey(window, GLFW_KEY_SPACE);
     if (left) {
-        // printf("Left\n");
         player.move(0);
     }
     if (right) {
       player.move(1);
     }
     if(space) {
-      // printf("Space\n");
       player.tickUp();
     }
 }
@@ -91,8 +92,8 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    player = Ball(-8, -5, COLOR_RED);
-    platform = Platform(-8, -8, COLOR_GREEN);
+    player = Player(-7, FLOOR + 2.5f, COLOR_RED);
+    platform = Platform(-8, FLOOR, COLOR_GREEN);
     for(int i=0;i<=20;++i)
     {
         int random = rand()%5;
@@ -123,8 +124,8 @@ void initGL(GLFWwindow *window, int width, int height) {
 
 int main(int argc, char **argv) {
     srand(time(0));
-    int width  = 600;
-    int height = 600;
+    int width  = WINDOW_WIDTH;
+    int height = WINDOW_HEIGHT;
 
     window = initGLFW(width, height);
 
@@ -142,11 +143,9 @@ int main(int argc, char **argv) {
             glfwSwapBuffers(window);
 
             // Detect coin capture
-            bounding_box_t plyr_c = {player.position.x,player.position.y, 1.5f, 4.0f};
             for(int i=0; i<20 ; i++)
             {
-                bounding_box_t coin_c = {coin[i].position.x,coin[i].position.y,0.6f,0.4f};
-                if(detect_collision(plyr_c,coin_c))
+                if(detect_collision(player.box(),coin[i].box()))
                 {
                     coin[i].position.y -= 100;
                     points++;
@@ -166,8 +165,8 @@ int main(int argc, char **argv) {
 }
 
 bool detect_collision(bounding_box_t a, bounding_box_t b) {
-    return (abs(a.x - b.x) * 1 < (a.width + b.width)) &&
-           (abs(a.y - b.y) * 1 < (a.height + b.height));
+    return (abs(a.x - b.x) * 2 < (a.width + b.width)) &&
+           (abs(a.y - b.y) * 2 < (a.height + b.height));
 }
 
 void reset_screen() {

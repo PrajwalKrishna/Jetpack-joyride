@@ -67,10 +67,10 @@ extern GLMatrices Matrices;
 enum direction_t { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT };
 
 struct bounding_box_t {
-    float x;
-    float y;
-    float width;
-    float height;
+    double x;
+    double y;
+    double width;
+    double height;
 };
 
 bool detect_collision(bounding_box_t a, bounding_box_t b);

@@ -4,10 +4,10 @@
 #define BALL_H
 
 
-class Ball {
+class Player {
 public:
-    Ball() {}
-    Ball(float x, float y, color_t color);
+    Player() {}
+    Player(float x, float y, color_t color);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
@@ -16,9 +16,12 @@ public:
     void tickUp();
     void move(int direction);
     double speed;
+    bounding_box_t box();
 private:
     VAO *object;
     double speed_x;
+    static constexpr double height = 3.0f;
+    static constexpr double width = 1.5f;
 };
 
 #endif // BALL_H

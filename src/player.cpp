@@ -1,26 +1,27 @@
-#include "ball.h"
+#include "player.h"
+#include "constant.h"
 #include "main.h"
 
-Ball::Ball(float x, float y, color_t color) {
+Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     speed = 1;
-    speed_x = 0.01;
+    speed_x = 0.03;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
-         0.0f, 0.0f, 0.0f, // triangle 1 : begin
-         1.5f, 4.0f, 0.0f,
-         1.5f, 0.0f, 0.0f, // triangle 1 : end
-         0.0f, 4.0f, 0.0f, // triangle 2 : begin
-         1.5f, 4.0f, 0.0f,
-         0.0f, 0.0f, 0.0f, // triangle 2 : end
+         width/2, height/2, 0.0f, // triangle 1 : begin
+        -width/2, height/2, 0.0f,
+         width/2,-height/2, 0.0f, // triangle 1 : end
+        -width/2, height/2, 0.0f, // triangle 2 : begin
+        -width/2,-height/2, 0.0f,
+         width/2,-height/2, 0.0f, // triangle 2 : end
     };
 
     this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
 }
 
-void Ball::draw(glm::mat4 VP) {
+void Player::draw(glm::mat4 VP) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
     glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
@@ -32,10 +33,10 @@ void Ball::draw(glm::mat4 VP) {
     draw3DObject(this->object);
 }
 
-void Ball::set_position(float x, float y) {
+void Player::set_position(float x, float y) {
     this->position = glm::vec3(x, y, 0);
 }
-void Ball::move( int direction) {
+void Player::move( int direction) {
   // zero = left
   // one = right
   if(direction)
@@ -43,32 +44,30 @@ void Ball::move( int direction) {
   else if(this->position.x > -8.0)
     this->position.x -= speed_x;
 }
-void Ball::tick() {
+
+void Player::tick() {
     // this->rotation += speed;
     // printf("X = %f\n",this->position.x);
     this->speed_x += 0.0001;
     // this->position.x += speed_x;
 
-    double FLOOR = -5;
-    double GRAVITY = 0.001;
-    if(this->position.y > FLOOR)
+    if(this->position.y >= FLOOR + height/2)
       this->speed += GRAVITY;
     else
       this->speed = 0;
-    // printf("Height = %f\n", this->position.y);
     this->position.y -= speed;
 }
 
-void Ball::tickUp() {
-  int CELLING = 8;
-  if(this->position.y < CELLING)
-    this->position.y += 0.1;
+void Player::tickUp() {
+  if(this->position.y < CEILING - height/2 - 0.5)
+    this->position.y += 0.5;
+  else if(this->position.y < CEILING - height/2)
+    this->position.y += CEILING - height/2;
+  else
+    this->speed = 0;
 }
 
-// void Ball::tickGravity() {
-//   int FLOOR = -2;
-//   if(this->position.y > FLOOR)
-//     this->speed += 0.05;
-//   else
-//     this->speed = 0;
-// }
+bounding_box_t Player::box() {
+    bounding_box_t box = {this->position.x, this->position.y, width, height};
+    return box;
+}

@@ -46,7 +46,7 @@ void keyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
             quit(window);
             break;
         case GLFW_KEY_SPACE:
-            printf("Space\n");
+            //printf("Space\n");
             break;
         default:
             break;
@@ -89,4 +89,11 @@ void mouseButton(GLFWwindow *window, int button, int action, int mods) {
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     // Do something
+    //screen_zoom = 1;
+    printf("Screen = %f %f \n", xoffset, yoffset);
+    if(yoffset > 0)
+      screen_zoom += 0.125;
+    else if(yoffset < 0)
+      screen_zoom -= 0.125;
+    reset_screen();
 }

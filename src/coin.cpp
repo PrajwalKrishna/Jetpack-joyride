@@ -8,12 +8,12 @@ Coin::Coin(float x, float y, color_t color) {
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
-         0.0f, 0.0f, 0.0f, // triangle 1 : begin
-         0.6f, 0.4f, 0.0f,
-         0.6f, 0.0f, 0.0f, // triangle 1 : end
-         0.0f, 0.4f, 0.0f, // triangle 2 : begin
-         0.6f, 0.4f, 0.0f,
-         0.0f, 0.0f, 0.0f, // triangle 2 : end
+         width/2,      0.0f, 0.0f, // triangle 1 : begin
+             0.0f, height/2, 0.0f,
+         -width/2,     0.0f, 0.0f, // triangle 1 : end
+          width/2,     0.0f, 0.0f, // triangle 2 : begin
+             0.0f,-height/2, 0.0f,
+         -width/2,     0.0f, 0.0f, // triangle 2 : end
     };
 
     this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
@@ -24,7 +24,7 @@ void Coin::draw(glm::mat4 VP) {
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
     glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
     // No need as coords centered at 0, 0, 0 of  around which we waant to rotate
-    // rotate          = rotate * glm::translate(glm::vec3(0, -0.6, 0));
+    // rotate          = rotate * glm::translate(glm::vec3(0, -width, 0));
     Matrices.model *= (translate * rotate);
     glm::mat4 MVP = VP * Matrices.model;
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -39,4 +39,9 @@ void Coin::tick() {
     this->rotation += speed;
     this->position.x -= speed/100;
     // this->position.y -= speed;
+}
+
+bounding_box_t Coin::box() {
+    bounding_box_t box = {this->position.x,this->position.y,width,height};
+    return box;
 }

@@ -4,10 +4,10 @@
 #define COIN_H
 
 
-class Coin {
+class Digit {
 public:
-    Coin() {}
-    Coin(float x, float y, color_t color);
+    Digit() {}
+    Digit(float x, float y, color_t color);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
@@ -17,8 +17,6 @@ public:
     bounding_box_t box();
 private:
     VAO *object;
-    static constexpr double height = 0.4f;
-    static constexpr double width = 0.4f;
 };
 
 #endif // COIN_H
