@@ -5,8 +5,8 @@
 #include "player.h"
 #include "timer.h"
 #include <unistd.h>
-
 #include "laser.h"
+#include "firebeam.h"
 
 using namespace std;
 
@@ -24,9 +24,13 @@ Platform platform;
 Coin coin[100];
 
 Laser laser;
+Firebeam firebeam;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
+float origin = 0.0f;
+
+float frame = 0.0f;
 
 Timer t60(1.0 / 60);
 
@@ -41,9 +45,9 @@ void draw() {
     glUseProgram (programID);
 
     // Eye - Location of camera. Don't change unless you are sure!!
-    glm::vec3 eye ( 5*cos(camera_rotation_angle*M_PI/180.0f), 0, 5*sin(camera_rotation_angle*M_PI/180.0f) );
+    glm::vec3 eye ( frame, 0, 1);
     // Target - Where is the camera looking at.  Don't change unless you are sure!!
-    glm::vec3 target (0, 0, 0);
+    glm::vec3 target (frame, 0, 0);
     // Up - Up vector defines tilt of camera.  Don't change unless you are sure!!
     glm::vec3 up (0, 1, 0);
 
@@ -65,6 +69,7 @@ void draw() {
     player.draw(VP);
     platform.draw(VP);
     laser.draw(VP);
+    firebeam.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -92,6 +97,7 @@ void tick_elements() {
         coin[i].tick();
 
     laser.tick();
+    firebeam.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -103,6 +109,8 @@ void initGL(GLFWwindow *window, int width, int height) {
     player = Player(-7, FLOOR + 2.5f, COLOR_RED);
     platform = Platform(-8, FLOOR, COLOR_GREEN);
     laser = Laser(4, FLOOR + 9, M_PI/2, COLOR_GREEN);
+    firebeam = Firebeam(0 ,0 , COLOR_YELLOW);
+
     for(int i=0;i<=20;++i)
     {
         int random = rand()%5;
@@ -152,7 +160,14 @@ int main(int argc, char **argv) {
             glfwSwapBuffers(window);
 
             // Detect collision from Laser
-                laser.collision(player.box());
+            if(laser.collision(player.box())) {
+                    player.die();
+            }
+
+            // Detect collision with firebeam
+            if(detect_collision(player.box(), firebeam.box())){
+                player.die();
+            }
 
             // Detect coin capture
             for(int i=0; i<20 ; i++)
@@ -167,12 +182,13 @@ int main(int argc, char **argv) {
 
             tick_elements();
             tick_input(window);
+            frame += SCREEN_SPEED;
         }
 
         // Poll for Keyboard and mouse events
         glfwPollEvents();
         // Sleep for CPU freeup
-        usleep(12000);
+        usleep(10000);
     }
 
     quit(window);

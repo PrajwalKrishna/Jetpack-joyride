@@ -46,12 +46,12 @@ void Player::move( int direction) {
 }
 
 void Player::tick() {
-    // this->rotation += speed;
-    // printf("X = %f\n",this->position.x);
     this->speed_x += 0.0001;
-    // this->position.x += speed_x;
 
-    if(this->position.y >= FLOOR + height/2)
+    // Move player along screen
+    this->position.x += SCREEN_SPEED;
+
+    if(this->position.y > FLOOR + height/2)
       this->speed += GRAVITY;
     else
       this->speed = 0;
@@ -61,13 +61,21 @@ void Player::tick() {
 void Player::tickUp() {
   if(this->position.y < CEILING - height/2 - 0.5)
     this->position.y += 0.5;
-  else if(this->position.y < CEILING - height/2)
-    this->position.y += CEILING - height/2;
-  else
+  else if(this->position.y <= CEILING - height/2){
+    this->position.y += CEILING - height/2 - this->position.y;
     this->speed = 0;
+ }
+  // else
+  //   this->speed = 0;
+  printf("Player %f %f\n",this->position.y, CEILING);
 }
 
 bounding_box_t Player::box() {
     bounding_box_t box = {this->position.x, this->position.y, width, height};
     return box;
+}
+
+void Player::die() {
+    this->lives--;
+    printf("Player died \t Lives left = %d\n",this->lives);
 }

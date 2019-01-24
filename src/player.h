@@ -17,11 +17,13 @@ public:
     void move(int direction);
     double speed;
     bounding_box_t box();
+    void die();
 private:
     VAO *object;
     double speed_x;
     static constexpr double height = 3.0f;
     static constexpr double width = 1.5f;
+    int lives = 3;
 };
 
 #endif // BALL_H
