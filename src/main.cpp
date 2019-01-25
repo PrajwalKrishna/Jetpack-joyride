@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "laser.h"
 #include "firebeam.h"
+#include "boomerang.h"
 
 using namespace std;
 
@@ -20,24 +21,25 @@ GLFWwindow *window;
 
 Player player;
 int points = 0;
-Platform platform;
+Platform platform,roof;
 Coin coin[100];
 
 Laser laser;
+Boomerang boomerang;
 Firebeam firebeam;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
 float origin = 0.0f;
 
-float frame = 0.0f;
+float FRAME = 0.0f;
 
 Timer t60(1.0 / 60);
 
 /* Render the scene with openGL */
 /* Edit this function according to your assignment */
 void draw() {
-    // clear the color and depth in the frame buffer
+    // clear the color and depth in the FRAME buffer
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // use the loaded shader program
@@ -45,9 +47,9 @@ void draw() {
     glUseProgram (programID);
 
     // Eye - Location of camera. Don't change unless you are sure!!
-    glm::vec3 eye ( frame, 0, 1);
+    glm::vec3 eye ( FRAME, 0, 1);
     // Target - Where is the camera looking at.  Don't change unless you are sure!!
-    glm::vec3 target (frame, 0, 0);
+    glm::vec3 target (FRAME, 0, 0);
     // Up - Up vector defines tilt of camera.  Don't change unless you are sure!!
     glm::vec3 up (0, 1, 0);
 
@@ -56,7 +58,7 @@ void draw() {
     // Don't change unless you are sure!!
     // Matrices.view = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Fixed camera for 2D (ortho) in XY plane
 
-    // Compute ViewProject matrix as view/camera might not be changed for this frame (basic scenario)
+    // Compute ViewProject matrix as view/camera might not be changed for this FRAME (basic scenario)
     // Don't change unless you are sure!!
     glm::mat4 VP = Matrices.projection * Matrices.view;
 
@@ -68,8 +70,10 @@ void draw() {
     // Scene render
     player.draw(VP);
     platform.draw(VP);
+    roof.draw(VP);
     laser.draw(VP);
     firebeam.draw(VP);
+    boomerang.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -98,6 +102,7 @@ void tick_elements() {
 
     laser.tick();
     firebeam.tick();
+    boomerang.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -108,8 +113,10 @@ void initGL(GLFWwindow *window, int width, int height) {
 
     player = Player(-7, FLOOR + 2.5f, COLOR_RED);
     platform = Platform(-8, FLOOR, COLOR_GREEN);
-    laser = Laser(4, FLOOR + 9, M_PI/2, COLOR_GREEN);
+    roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
+    laser = Laser(4, FLOOR + 9, M_PI/6, COLOR_GREEN);
     firebeam = Firebeam(0 ,0 , COLOR_YELLOW);
+    boomerang = Boomerang( 0, 0, COLOR_RED);
 
     for(int i=0;i<=20;++i)
     {
@@ -169,6 +176,11 @@ int main(int argc, char **argv) {
                 player.die();
             }
 
+            // Detect collision with boomerang
+            if(detect_collision(player.box(), boomerang.box())){
+                player.die();
+            }
+
             // Detect coin capture
             for(int i=0; i<20 ; i++)
             {
@@ -182,7 +194,7 @@ int main(int argc, char **argv) {
 
             tick_elements();
             tick_input(window);
-            frame += SCREEN_SPEED;
+            FRAME += SCREEN_SPEED;
         }
 
         // Poll for Keyboard and mouse events

@@ -92,7 +92,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     // printf("Screen = %f %f \n", xoffset, yoffset);
     if(yoffset > 0)
       screen_zoom += 0.1;
-    else if(yoffset < 0 && screen_zoom > 0.01)
+    else if(yoffset < 0 && screen_zoom > 0.1)
       screen_zoom -= 0.095;
     reset_screen();
 }

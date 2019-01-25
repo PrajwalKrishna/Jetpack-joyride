@@ -6,7 +6,7 @@ Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     speed = 1;
-    speed_x = 0.03;
+    speed_x = 0.05;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
@@ -39,14 +39,14 @@ void Player::set_position(float x, float y) {
 void Player::move( int direction) {
   // zero = left
   // one = right
-  if(direction)
+  if(direction && this->position.x < FRAME + 8 - speed_x - width/2)
     this->position.x += speed_x;
-  else if(this->position.x > -8.0)
+  else if(this->position.x > FRAME - 8 + speed_x + width/2)
     this->position.x -= speed_x;
 }
 
 void Player::tick() {
-    this->speed_x += 0.0001;
+    // this->speed_x += 0.0001;
 
     // Move player along screen
     this->position.x += SCREEN_SPEED;
@@ -65,9 +65,6 @@ void Player::tickUp() {
     this->position.y += CEILING - height/2 - this->position.y;
     this->speed = 0;
  }
-  // else
-  //   this->speed = 0;
-  printf("Player %f %f\n",this->position.y, CEILING);
 }
 
 bounding_box_t Player::box() {

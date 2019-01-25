@@ -1,4 +1,5 @@
 #include "platform.h"
+#include "constant.h"
 #include "main.h"
 
 Platform::Platform(float x, float y, color_t color) {
@@ -9,10 +10,10 @@ Platform::Platform(float x, float y, color_t color) {
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
           0.0f, 0.0f, 0.0f, // triangle 1 : begin
-         16.0f,-3.0f, 0.0f,
-         16.0f, 0.0f, 0.0f, // triangle 1 : end
-          0.0f,-3.0f, 0.0f, // triangle 2 : begin
-         16.0f,-3.0f, 0.0f,
+  LEVEL_LENGTH,-2.0f, 0.0f,
+  LEVEL_LENGTH, 0.0f, 0.0f, // triangle 1 : end
+          0.0f,-2.0f, 0.0f, // triangle 2 : begin
+  LEVEL_LENGTH,-2.0f, 0.0f,
           0.0f, 0.0f, 0.0f, // triangle 2 : end
     };
 

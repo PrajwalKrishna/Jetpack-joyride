@@ -77,7 +77,7 @@ bool detect_collision(bounding_box_t a, bounding_box_t b);
 
 extern float screen_zoom, screen_center_x, screen_center_y;
 extern float origin;
-extern float frame;
+extern float FRAME;
 void reset_screen();
 
 // ---- Colors ----
