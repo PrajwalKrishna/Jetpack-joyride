@@ -1,5 +1,5 @@
 #include "waterball.h"
-#include "constant.h"
+
 #include "main.h"
 
 Waterball::Waterball(float x, float y) {

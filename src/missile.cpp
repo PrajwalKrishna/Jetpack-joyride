@@ -1,5 +1,5 @@
 #include "missile.h"
-#include "constant.h"
+
 #include "main.h"
 
 Missile::Missile(float x, float y, color_t color) {

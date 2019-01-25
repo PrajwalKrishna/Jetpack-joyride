@@ -1,5 +1,5 @@
 #include "boomerang.h"
-#include "constant.h"
+
 #include "main.h"
 
 Boomerang::Boomerang(float x, float y, color_t color) {

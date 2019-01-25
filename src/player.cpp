@@ -1,5 +1,5 @@
 #include "player.h"
-#include "constant.h"
+
 #include "main.h"
 
 Player::Player(float x, float y, color_t color) {

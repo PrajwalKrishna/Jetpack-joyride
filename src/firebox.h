@@ -3,7 +3,6 @@
 #ifndef FIREBOX_H
 #define FIREBOX_H
 
-const double thickness = 0.03f;
 
 extern const color_t COLOR_ORANGE;
 extern const color_t COLOR_YELLOW;
@@ -23,6 +22,7 @@ private:
     VAO *object[2];
     static constexpr double height = 0.3f;
     static constexpr double width = 0.3f;
+    static constexpr double thickness = 0.03f;
 };
 
 #endif // FIREBOX_H

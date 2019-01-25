@@ -1,5 +1,5 @@
 #include "platform.h"
-#include "constant.h"
+
 #include "main.h"
 
 Platform::Platform(float x, float y, color_t color) {

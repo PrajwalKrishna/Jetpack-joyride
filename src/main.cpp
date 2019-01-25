@@ -1,6 +1,6 @@
 #include "main.h"
 #include "coin.h"
-#include "constant.h"
+
 #include "platform.h"
 #include "player.h"
 #include "timer.h"
@@ -12,6 +12,8 @@
 #include "waterball.h"
 #include "missile.h"
 #include "heart.h"
+#include "dragon.h"
+#include "magnet.h"
 
 using namespace std;
 
@@ -37,6 +39,8 @@ Number_display number_display;
 Digit_display digit_display;
 Missile missile;
 Heart heart;
+Dragon dragon;
+Magnet magnet;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
@@ -91,6 +95,8 @@ void draw() {
     heart.draw(VP);
     digit_display.draw(VP);
     number_display.draw(VP);
+    dragon.draw(VP);
+    magnet.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -130,6 +136,8 @@ void tick_elements() {
 
     missile.tick();
     heart.tick();
+    dragon.tick(player.position.x, player.position.y);
+    magnet.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -150,6 +158,8 @@ void initGL(GLFWwindow *window, int width, int height) {
     digit_display = Digit_display(1, 1, 9);
     missile = Missile(2, 2, COLOR_BLUE);
     heart = Heart(4, 4);
+    dragon = Dragon(3,4);
+    magnet = Magnet(-2,-2);
 
     for(int i=0;i<=20;++i)
     {

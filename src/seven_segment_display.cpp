@@ -122,7 +122,6 @@ void Number_display::draw(glm::mat4 VP) {
     for(int i=0;i<this->count;i++) {
         this->digits[i].draw(MVP);
     }
-
 };
 
 void Number_display::set_position(float x, float y) {
