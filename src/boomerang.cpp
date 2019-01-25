@@ -25,7 +25,7 @@ Boomerang::Boomerang(float x, float y, color_t color) {
 void Boomerang::draw(glm::mat4 VP) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
-    glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
+    glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(0, 0, 1));
     // No need as coords centered at 0, 0, 0 of  around which we waant to rotate
     // rotate          = rotate * glm::translate(glm::vec3(0, -width, 0));
     Matrices.model *= (translate * rotate);
@@ -39,6 +39,8 @@ void Boomerang::set_position(float x, float y) {
 }
 
 void Boomerang::tick() {
+    // rotation
+    this->rotation += angular_velocity;
     // Y axis
     this->speed_y += GRAVITY/8;
     if(this->position.y >= CEILING - height/2.0f - this->speed_y)

@@ -11,6 +11,7 @@
 #include "seven_segment_display.h"
 #include "waterball.h"
 #include "missile.h"
+#include "heart.h"
 
 using namespace std;
 
@@ -35,12 +36,14 @@ Waterball waterball;
 Number_display number_display;
 Digit_display digit_display;
 Missile missile;
+Heart heart;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
 float origin = 0.0f;
 
 float FRAME = 0.0f;
+float SCREEN_SPEED = 0.01f;
 
 Timer t60(1.0 / 60);
 
@@ -85,6 +88,7 @@ void draw() {
     waterball.draw(VP);
 
     missile.draw(VP);
+    heart.draw(VP);
     digit_display.draw(VP);
     number_display.draw(VP);
 
@@ -97,14 +101,20 @@ void tick_input(GLFWwindow *window) {
     int left  = glfwGetKey(window, GLFW_KEY_LEFT);
     int right = glfwGetKey(window, GLFW_KEY_RIGHT);
     int space = glfwGetKey(window, GLFW_KEY_SPACE);
+    int up = glfwGetKey(window, GLFW_KEY_UP);
+    int down = glfwGetKey(window, GLFW_KEY_DOWN);
+
     if (left) {
         player.move(0);
     }
     if (right) {
       player.move(1);
     }
-    if(space) {
+    if (space || up) {
       player.tickUp();
+    }
+    if (down) {
+        // player.shoot();
     }
 }
 
@@ -119,6 +129,7 @@ void tick_elements() {
     waterball.tick();
 
     missile.tick();
+    heart.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -127,17 +138,18 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    player = Player(-7, FLOOR + 2.5f, COLOR_RED);
+    player = Player(-7, FLOOR + 2.5f, COLOR_ORANGE);
     platform = Platform(-8, FLOOR, COLOR_GREEN);
     roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
     laser = Laser(4, FLOOR + 9, M_PI/6);
     firebeam = Firebeam(0 ,0 , COLOR_YELLOW);
-    boomerang = Boomerang( 0, 0, COLOR_RED);
+    boomerang = Boomerang( 0, 0, COLOR_ORANGE);
     waterball = Waterball(-1, -1);
 
     number_display = Number_display(1, 1, 1459);
     digit_display = Digit_display(1, 1, 9);
     missile = Missile(2, 2, COLOR_BLUE);
+    heart = Heart(4, 4);
 
     for(int i=0;i<=20;++i)
     {
@@ -221,6 +233,7 @@ int main(int argc, char **argv) {
             tick_elements();
             tick_input(window);
             FRAME += SCREEN_SPEED;
+            SCREEN_SPEED += SCREEN_ACCELERATION;
         }
 
         // Poll for Keyboard and mouse events

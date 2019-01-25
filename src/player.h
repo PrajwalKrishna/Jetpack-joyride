@@ -21,8 +21,8 @@ public:
 private:
     VAO *object;
     double speed_x;
-    static constexpr double height = 3.0f;
-    static constexpr double width = 1.5f;
+    static constexpr double height = 1.0f;
+    static constexpr double width = 0.5f;
     int lives = 3;
 };
 

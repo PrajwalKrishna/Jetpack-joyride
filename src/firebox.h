@@ -5,7 +5,7 @@
 
 const double thickness = 0.03f;
 
-extern const color_t COLOR_RED;
+extern const color_t COLOR_ORANGE;
 extern const color_t COLOR_YELLOW;
 
 class Firebox {

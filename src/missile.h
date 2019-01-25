@@ -17,7 +17,7 @@ private:
     VAO *object;
     static constexpr double height = 0.4f;
     static constexpr double width =  1.0f;
-    double speed_x;
+    static constexpr double speed_x = 0.04f;
 };
 
 #endif // MISSILE_H
