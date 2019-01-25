@@ -1,10 +1,11 @@
 #include "main.h"
 
-#ifndef Seven_segment_display_H
-#define Seven_segment_display_H
+#ifndef Digit_display_H
+#define Digit_display_H
 
 const float SEGMENT_LENGTH = 0.5;
 const float THICKNESS = 0.06;
+const int MAX_DIGITS = 19;
 
 class Segment {
 public:
@@ -18,17 +19,31 @@ private:
     VAO *object;
 };
 
-class Seven_segment_display {
+class Digit_display {
 public:
-    Seven_segment_display() {}
-    Seven_segment_display(float x, float y, color_t color);
+    Digit_display() {}
+    Digit_display(float x, float y, int digit);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
     void set_position(float x, float y);
     void tick();
 private:
-    VAO *object[7];
+    Segment segments[7];
 };
 
-#endif // Seven_segment_display_H
+class Number_display {
+public:
+    Number_display() {}
+    Number_display(float x, float y, int number);
+    glm::vec3 position;
+    float rotation;
+    void draw(glm::mat4 VP);
+    void set_position(float x, float y);
+    void tick();
+private:
+    Digit_display digits[MAX_DIGITS];
+    int count;
+};
+
+#endif // Digit_display_H

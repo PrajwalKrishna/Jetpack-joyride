@@ -10,12 +10,12 @@ Player::Player(float x, float y, color_t color) {
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
-         width/2, height/2, 0.0f, // triangle 1 : begin
-        -width/2, height/2, 0.0f,
-         width/2,-height/2, 0.0f, // triangle 1 : end
-        -width/2, height/2, 0.0f, // triangle 2 : begin
-        -width/2,-height/2, 0.0f,
-         width/2,-height/2, 0.0f, // triangle 2 : end
+         width/2.0f, height/2.0f, 0.0f, // triangle 1 : begin
+        -width/2.0f, height/2.0f, 0.0f,
+         width/2.0f,-height/2.0f, 0.0f, // triangle 1 : end
+        -width/2.0f, height/2.0f, 0.0f, // triangle 2 : begin
+        -width/2.0f,-height/2.0f, 0.0f,
+         width/2.0f,-height/2.0f, 0.0f, // triangle 2 : end
     };
 
     this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
@@ -39,9 +39,9 @@ void Player::set_position(float x, float y) {
 void Player::move( int direction) {
   // zero = left
   // one = right
-  if(direction && this->position.x < FRAME + 8 - speed_x - width/2)
+  if(direction && this->position.x < FRAME + 8 - speed_x - width/2.0f)
     this->position.x += speed_x;
-  else if(this->position.x > FRAME - 8 + speed_x + width/2)
+  else if(this->position.x > FRAME - 8 + speed_x + width/2.0f)
     this->position.x -= speed_x;
 }
 
@@ -51,7 +51,7 @@ void Player::tick() {
     // Move player along screen
     this->position.x += SCREEN_SPEED;
 
-    if(this->position.y > FLOOR + height/2)
+    if(this->position.y > FLOOR + height/2.0f)
       this->speed += GRAVITY;
     else
       this->speed = 0;
@@ -59,10 +59,10 @@ void Player::tick() {
 }
 
 void Player::tickUp() {
-  if(this->position.y < CEILING - height/2 - 0.5)
+  if(this->position.y < CEILING - height/2.0f - 0.5)
     this->position.y += 0.5;
-  else if(this->position.y <= CEILING - height/2){
-    this->position.y += CEILING - height/2 - this->position.y;
+  else if(this->position.y <= CEILING - height/2.0f){
+    this->position.y += CEILING - height/2.0f - this->position.y;
     this->speed = 0;
  }
 }

@@ -7,21 +7,21 @@ Firebox::Firebox(float x, float y, double theta) {
     speed = 1;
 
     static const GLfloat vertex_buffer_data_2[] = {
-         width/2, width/2 * sin(theta) + 4 * thickness, 0.0f, // triangle 1 : begin
-        -width/2,-width/2 * sin(theta), 0.0f,
-         width/2, width/2 * sin(theta) - 4 * thickness, 0.0f, // triangle 1 : end
-        -width/2,-width/2 * sin(theta) + 4 * thickness, 0.0f, // triangle 2 : begin
-        -width/2,-width/2 * sin(theta) - 4 * thickness, 0.0f,
-         width/2, width/2 * sin(theta), 0.0f, // triangle 2 : end
+         width/2.0f, width/2.0f * sin(theta) + 4 * thickness, 0.0f, // triangle 1 : begin
+        -width/2.0f,-width/2.0f * sin(theta), 0.0f,
+         width/2.0f, width/2.0f * sin(theta) - 4 * thickness, 0.0f, // triangle 1 : end
+        -width/2.0f,-width/2.0f * sin(theta) + 4 * thickness, 0.0f, // triangle 2 : begin
+        -width/2.0f,-width/2.0f * sin(theta) - 4 * thickness, 0.0f,
+         width/2.0f, width/2.0f * sin(theta), 0.0f, // triangle 2 : end
     };
 
    static const GLfloat vertex_buffer_data[] = {
-        width/2, width/2 * sin(theta) + thickness, 0.0f, // triangle 1 : begin
-       -width/2,-width/2 * sin(theta), 0.0f,
-        width/2, width/2 * sin(theta) - thickness, 0.0f, // triangle 1 : end
-       -width/2,-width/2 * sin(theta) + thickness, 0.0f, // triangle 2 : begin
-       -width/2,-width/2 * sin(theta) - thickness, 0.0f,
-        width/2, width/2 * sin(theta), 0.0f, // triangle 2 : end
+        width/2.0f, width/2.0f * sin(theta) + thickness, 0.0f, // triangle 1 : begin
+       -width/2.0f,-width/2.0f * sin(theta), 0.0f,
+        width/2.0f, width/2.0f * sin(theta) - thickness, 0.0f, // triangle 1 : end
+       -width/2.0f,-width/2.0f * sin(theta) + thickness, 0.0f, // triangle 2 : begin
+       -width/2.0f,-width/2.0f * sin(theta) - thickness, 0.0f,
+        width/2.0f, width/2.0f * sin(theta), 0.0f, // triangle 2 : end
    };
    this->object[0] = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data_2, COLOR_RED, GL_FILL);
    this->object[1] = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, COLOR_YELLOW, GL_FILL);

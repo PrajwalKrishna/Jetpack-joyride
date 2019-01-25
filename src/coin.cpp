@@ -8,12 +8,12 @@ Coin::Coin(float x, float y, color_t color) {
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
-         width/2,      0.0f, 0.0f, // triangle 1 : begin
-             0.0f, height/2, 0.0f,
-         -width/2,     0.0f, 0.0f, // triangle 1 : end
-          width/2,     0.0f, 0.0f, // triangle 2 : begin
-             0.0f,-height/2, 0.0f,
-         -width/2,     0.0f, 0.0f, // triangle 2 : end
+         width/2.0f,      0.0f, 0.0f, // triangle 1 : begin
+             0.0f, height/2.0f, 0.0f,
+         -width/2.0f,     0.0f, 0.0f, // triangle 1 : end
+          width/2.0f,     0.0f, 0.0f, // triangle 2 : begin
+             0.0f,-height/2.0f, 0.0f,
+         -width/2.0f,     0.0f, 0.0f, // triangle 2 : end
     };
 
     this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);

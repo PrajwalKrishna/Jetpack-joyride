@@ -20,7 +20,6 @@ public:
     bounding_box_t box();
     bool collision(bounding_box_t player);
 private:
-    VAO *object;
     static constexpr double height = 0.3f;
     static constexpr double width = 0.3f;
     Firebox firebox[num];

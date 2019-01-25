@@ -10,6 +10,7 @@
 #include "boomerang.h"
 #include "seven_segment_display.h"
 #include "waterball.h"
+#include "missile.h"
 
 using namespace std;
 
@@ -31,7 +32,9 @@ Boomerang boomerang;
 Firebeam firebeam;
 Waterball waterball;
 
-Segment segment;
+Number_display number_display;
+Digit_display digit_display;
+Missile missile;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
@@ -81,7 +84,9 @@ void draw() {
     boomerang.draw(VP);
     waterball.draw(VP);
 
-    segment.draw(VP);
+    missile.draw(VP);
+    digit_display.draw(VP);
+    number_display.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -112,6 +117,8 @@ void tick_elements() {
     firebeam.tick();
     boomerang.tick();
     waterball.tick();
+
+    missile.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -128,7 +135,9 @@ void initGL(GLFWwindow *window, int width, int height) {
     boomerang = Boomerang( 0, 0, COLOR_RED);
     waterball = Waterball(-1, -1);
 
-    segment = Segment(1, 1, M_PI/2, COLOR_YELLOW);
+    number_display = Number_display(1, 1, 1459);
+    digit_display = Digit_display(1, 1, 9);
+    missile = Missile(2, 2, COLOR_BLUE);
 
     for(int i=0;i<=20;++i)
     {
@@ -193,6 +202,11 @@ int main(int argc, char **argv) {
                 player.die();
             }
 
+            // Detect collision with missile
+            if(detect_collision(player.box(), missile.box())){
+                player.die();
+            }
+
             // Detect coin capture
             for(int i=0; i<20 ; i++)
             {
@@ -211,6 +225,7 @@ int main(int argc, char **argv) {
 
         // Poll for Keyboard and mouse events
         glfwPollEvents();
+
         // Sleep for CPU freeup
         usleep(10000);
     }
