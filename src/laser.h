@@ -10,7 +10,7 @@ const int num = 16;
 class Laser {
 public:
     Laser() {}
-    Laser(float x, float y, double theta, color_t color);
+    Laser(float x, float y, double theta);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);

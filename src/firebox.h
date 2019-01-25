@@ -3,11 +3,15 @@
 #ifndef FIREBOX_H
 #define FIREBOX_H
 
+const double thickness = 0.03f;
+
+extern const color_t COLOR_RED;
+extern const color_t COLOR_YELLOW;
 
 class Firebox {
 public:
     Firebox() {}
-    Firebox(float x, float y, color_t color);
+    Firebox(float x, float y, double theta);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
@@ -16,7 +20,7 @@ public:
     double speed;
     bounding_box_t box();
 private:
-    VAO *object;
+    VAO *object[2];
     static constexpr double height = 0.3f;
     static constexpr double width = 0.3f;
 };

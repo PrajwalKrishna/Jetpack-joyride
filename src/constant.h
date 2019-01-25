@@ -4,6 +4,7 @@
 const float FLOOR = -6;
 const float CEILING = 6;
 const float GRAVITY = 0.002;
+const float GRAVE = -100;
 
 const int WINDOW_HEIGHT = 1000;
 const int WINDOW_WIDTH = 1480;

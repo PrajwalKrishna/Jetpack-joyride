@@ -8,6 +8,8 @@
 #include "laser.h"
 #include "firebeam.h"
 #include "boomerang.h"
+#include "seven_segment_display.h"
+#include "waterball.h"
 
 using namespace std;
 
@@ -27,6 +29,9 @@ Coin coin[100];
 Laser laser;
 Boomerang boomerang;
 Firebeam firebeam;
+Waterball waterball;
+
+Segment segment;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
@@ -74,6 +79,9 @@ void draw() {
     laser.draw(VP);
     firebeam.draw(VP);
     boomerang.draw(VP);
+    waterball.draw(VP);
+
+    segment.draw(VP);
 
     // Coin render
     for(int i=0;i<=20;++i)
@@ -103,6 +111,7 @@ void tick_elements() {
     laser.tick();
     firebeam.tick();
     boomerang.tick();
+    waterball.tick();
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -114,9 +123,12 @@ void initGL(GLFWwindow *window, int width, int height) {
     player = Player(-7, FLOOR + 2.5f, COLOR_RED);
     platform = Platform(-8, FLOOR, COLOR_GREEN);
     roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
-    laser = Laser(4, FLOOR + 9, M_PI/6, COLOR_GREEN);
+    laser = Laser(4, FLOOR + 9, M_PI/6);
     firebeam = Firebeam(0 ,0 , COLOR_YELLOW);
     boomerang = Boomerang( 0, 0, COLOR_RED);
+    waterball = Waterball(-1, -1);
+
+    segment = Segment(1, 1, M_PI/2, COLOR_YELLOW);
 
     for(int i=0;i<=20;++i)
     {

@@ -1,12 +1,12 @@
-#include "boomerang.h"
+#include "waterball.h"
 #include "constant.h"
 #include "main.h"
 
-Boomerang::Boomerang(float x, float y, color_t color) {
+Waterball::Waterball(float x, float y) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
-    this->speed_y = 0;
-    this->speed_x = 0.08f;
+    this->speed_y = 0.15f;
+    this->speed_x = 0.1f;
 
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
@@ -19,10 +19,10 @@ Boomerang::Boomerang(float x, float y, color_t color) {
         width/2,-height/2, 0.0f, // triangle 2 : end
    };
 
-    this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
+    this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, COLOR_BLUE, GL_FILL);
 }
 
-void Boomerang::draw(glm::mat4 VP) {
+void Waterball::draw(glm::mat4 VP) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
     glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
@@ -34,26 +34,32 @@ void Boomerang::draw(glm::mat4 VP) {
     draw3DObject(this->object);
 }
 
-void Boomerang::set_position(float x, float y) {
+void Waterball::set_position(float x, float y) {
     this->position = glm::vec3(x, y, 0);
 }
 
-void Boomerang::tick() {
+void Waterball::tick() {
     // Y axis
-    this->speed_y += GRAVITY/8;
-    if(this->position.y >= CEILING - height/2 - this->speed_y)
-        this->speed_y *= -1;
-    else if(this->position.y <= FLOOR + height/2 - this->speed_y)
-        this->speed_y *= -1;
+    if(this->position.y == GRAVE)
+        return;
+    this->speed_y -= GRAVITY;
+    if(this->position.y >= CEILING - height/2)
+        this->die();
+    else if(this->position.y <= FLOOR + height/2)
+        this->die();
     else
-        this->position.y -= this->speed_y;
+        this->position.y += this->speed_y;
 
     // X Axis
-    this->position.x -= this->speed_x;
-    this->speed_x -= deacceleration;
+    this->position.x += this->speed_x;
 }
 
-bounding_box_t Boomerang::box() {
+ void Waterball::die(){
+     printf("Waterball died\n");
+     this->position.y = GRAVE;
+}
+
+ bounding_box_t Waterball::box() {
     bounding_box_t box = {this->position.x,this->position.y,width,height};
     return box;
 }

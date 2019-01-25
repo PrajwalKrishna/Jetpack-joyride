@@ -3,13 +3,13 @@
 #include "main.h"
 
 
-Laser::Laser(float x, float y, double theta, color_t color) {
+Laser::Laser(float x, float y, double theta) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     speed = 1;
 
     for(int i=0;i < num; i++) {
-        firebox[i] = Firebox(cos(theta) * i * 0.3, sin(theta) * i * 0.3, color);
+        firebox[i] = Firebox(cos(theta) * i * 0.3, sin(theta) * i * 0.3, theta);
     }
 
    //  // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
