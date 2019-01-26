@@ -10,3 +10,4 @@ const color_t COLOR_BLUE = { 10, 98, 255};
 const color_t COLOR_LIGHT_GREEN = { 0, 128, 0};
 const color_t COLOR_DARK_GREEN = { 0, 255, 0};
 const color_t COLOR_GREY = { 200, 200, 200};
+const color_t COLOR_PINK = { 255, 0, 255};

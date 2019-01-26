@@ -36,6 +36,8 @@ void Dragon::set_position(float x, float y) {
 }
 
 void Dragon::tick(float player_x, float player_y) {
+    // Screen motion
+        this->position.x += SCREEN_SPEED/2;
     // X Axis
     this->position.x -= speed_x;
 

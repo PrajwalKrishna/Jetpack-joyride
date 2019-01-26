@@ -42,6 +42,7 @@ public:
     void set_position(float x, float y);
     void tick();
 private:
+    VAO *object;
     Digit_display digits[MAX_DIGITS];
     int count;
 };

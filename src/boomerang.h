@@ -12,6 +12,7 @@ public:
     void draw(glm::mat4 VP);
     void set_position(float x, float y);
     void tick();
+    double speed_x;
     bounding_box_t box();
 private:
     VAO *object;
@@ -19,7 +20,6 @@ private:
     static constexpr double width =  0.4f;
     static constexpr double deacceleration =  0.001f;
     static constexpr double angular_velocity = 1.0f;
-    double speed_x;
     double speed_y;
 };
 

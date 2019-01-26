@@ -107,6 +107,18 @@ Number_display::Number_display(float x, float y, int num) {
     for(int i=this->count-1;i>=0;i--){
         this->digits[i] = Digit_display(x + i * SEGMENT_LENGTH/1.5f, y, arr[i]);
     }
+    float width = SEGMENT_LENGTH * count * 1.5;
+    float height = SEGMENT_LENGTH * 1.5;
+    static const GLfloat vertex_buffer_data[] = {
+         width/2.0f, height/2.0f, 0.0f, // triangle 1 : begin
+        -width/2.0f, height/2.0f, 0.0f,
+         width/2.0f,-height/2.0f, 0.0f, // triangle 1 : end
+        -width/2.0f, height/2.0f, 0.0f, // triangle 2 : begin
+        -width/2.0f,-height/2.0f, 0.0f,
+         width/2.0f,-height/2.0f, 0.0f, // triangle 2 : end
+    };
+
+    this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, COLOR_BLACK, GL_FILL);
 }
 
 void Number_display::draw(glm::mat4 VP) {
@@ -118,6 +130,7 @@ void Number_display::draw(glm::mat4 VP) {
     Matrices.model *= (translate * rotate);
     glm::mat4 MVP = VP * Matrices.model;
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(this->object);
 
     for(int i=0;i<this->count;i++) {
         this->digits[i].draw(MVP);

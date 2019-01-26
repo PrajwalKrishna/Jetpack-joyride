@@ -5,7 +5,7 @@
 Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
-    speed = 1;
+    speed_y = 0;
     speed_x = 0.05;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
@@ -46,16 +46,14 @@ void Player::move( int direction) {
 }
 
 void Player::tick() {
-    // this->speed_x += 0.0001;
-
     // Move player along screen
     this->position.x += SCREEN_SPEED;
 
     if(this->position.y > FLOOR + height/2.0f)
-      this->speed += GRAVITY;
+      this->speed_y -= GRAVITY;
     else
-      this->speed = 0;
-    this->position.y -= speed;
+      this->speed_y = 0;
+    this->position.y += speed_y;
 }
 
 void Player::tickUp() {
@@ -63,7 +61,7 @@ void Player::tickUp() {
     this->position.y += 0.5;
   else if(this->position.y <= CEILING - height/2.0f){
     this->position.y += CEILING - height/2.0f - this->position.y;
-    this->speed = 0;
+    this->speed_y = 0;
  }
 }
 
@@ -75,4 +73,14 @@ bounding_box_t Player::box() {
 void Player::die() {
     this->lives--;
     printf("Player died \t Lives left = %d\n",this->lives);
+}
+
+void Player::get_life() {
+    this->lives++;
+    printf("Player gets life \t Lives left = %d\n",this->lives);
+}
+
+void Player::magnetic_motion(float x, float y) {
+        this->position.x += (x - this->position.x)/(5 * MAGNETIC_ACCELERATION);
+        this->position.y  += (y - this->position.y)/MAGNETIC_ACCELERATION;
 }

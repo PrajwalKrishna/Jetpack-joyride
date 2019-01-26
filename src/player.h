@@ -15,12 +15,14 @@ public:
     void tick();
     void tickUp();
     void move(int direction);
-    double speed;
     bounding_box_t box();
+    void magnetic_motion(float x, float y);
     void die();
+    void get_life();
 private:
     VAO *object;
     double speed_x;
+    double speed_y;
     static constexpr double height = 1.0f;
     static constexpr double width = 0.5f;
     int lives = 3;
