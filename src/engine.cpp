@@ -1,19 +1,4 @@
 #include "engine.h"
-#include <algorithm>
-
-// template <typename T> bool filter (T m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter (Magnet m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_2 (Coin m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_3 (Boomerang m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_4 (Heart m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_5 (Missile m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_6 (Dragon m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_7 (Firebeam m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_8 (Laser m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_9 (Waterball m) { return (m.position.y  == GRAVE); }
-bool filter_10 (Shield m) { return (m.position.x < FRAME - ARENA_WIDTH); }
-bool filter_11 (Iceball m) { return (m.position.y  == GRAVE); }
-bool filter_12 (Ring m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
@@ -33,54 +18,18 @@ void Engine::draw(glm::mat4 VP) {
     this->score_display.draw(VP);
     this->life_display.draw(VP);
 
-    this->magnets.erase(std::remove_if(this->magnets.begin(), this->magnets.end(), filter), this->magnets.end());
-    for (auto it = this->magnets.begin(); it != this->magnets.end(); it++)
-        it->draw(VP);
-
-    this->coins.erase(std::remove_if(this->coins.begin(), this->coins.end(), filter_2), this->coins.end());
-    for (auto it = this->coins.begin(); it != this->coins.end(); it++)
-        it->draw(VP);
-
-    this->boomerangs.erase(std::remove_if(this->boomerangs.begin(), this->boomerangs.end(), filter_3), this->boomerangs.end());
-    for (auto it = this->boomerangs.begin(); it != this->boomerangs.end(); it++)
-        it->draw(VP);
-
-    this->hearts.erase(std::remove_if(this->hearts.begin(), this->hearts.end(), filter_4), this->hearts.end());
-    for (auto it = this->hearts.begin(); it != this->hearts.end(); it++)
-        it->draw(VP);
-
-    this->missiles.erase(std::remove_if(this->missiles.begin(), this->missiles.end(), filter_5), this->missiles.end());
-    for (auto it = this->missiles.begin(); it != this->missiles.end(); it++)
-        it->draw(VP);
-
-    this->dragons.erase(std::remove_if(this->dragons.begin(), this->dragons.end(), filter_6), this->dragons.end());
-    for (auto it = this->dragons.begin(); it != this->dragons.end(); it++)
-        it->draw(VP);
-
-    this->firebeams.erase(std::remove_if(this->firebeams.begin(), this->firebeams.end(), filter_7), this->firebeams.end());
-    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++)
-        it->draw(VP);
-
-    this->lasers.erase(std::remove_if(this->lasers.begin(), this->lasers.end(), filter_8), this->lasers.end());
-    for (auto it = this->lasers.begin(); it != this->lasers.end(); it++)
-        it->draw(VP);
-
-    this->waterballs.erase(std::remove_if(this->waterballs.begin(), this->waterballs.end(), filter_9), this->waterballs.end());
-    for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
-        it->draw(VP);
-
-    this->shields.erase(std::remove_if(this->shields.begin(), this->shields.end(), filter_10), this->shields.end());
-    for (auto it = this->shields.begin(); it != this->shields.end(); it++)
-        it->draw(VP);
-
-    this->iceballs.erase(std::remove_if(this->iceballs.begin(), this->iceballs.end(), filter_11), this->iceballs.end());
-    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++)
-        it->draw(VP);
-
-    this->rings.erase(std::remove_if(this->rings.begin(), this->rings.end(), filter_12), this->rings.end());
-    for (auto it = this->rings.begin(); it != this->rings.end(); it++)
-        it->draw(VP);
-
+    draw_template(this->magnets, VP);
+    draw_template(this->coins, VP);
+    draw_template(this->boomerangs, VP);
+    draw_template(this->hearts, VP);
+    draw_template(this->missiles, VP);
+    draw_template(this->dragons, VP);
+    draw_template(this->firebeams, VP);
+    draw_template(this->lasers, VP);
+    draw_template(this->waterballs, VP);
+    draw_template(this->shields, VP);
+    draw_template(this->iceballs, VP);
+    draw_template(this->rings, VP);
 }
 
 void Engine::tick() {
@@ -258,7 +207,6 @@ void Engine::collider() {
         if(detect_collision(player.box(),it->box())){
             it->position.y = GRAVE;
             player.die();
-            printf("Yeah\n");
         }
     }
 }

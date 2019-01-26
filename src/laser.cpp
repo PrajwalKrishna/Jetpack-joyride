@@ -41,11 +41,8 @@ void Laser::tick() {
 bool Laser::collision(bounding_box_t player) {
     for(int i=0;i < num; i++) {
         bounding_box_t player_local = { player.x - this->position.x, player.y - this->position.y, player.width, player.height};
-        if(detect_collision(player_local, firebox[i].box())){
-            // printf("%f %f \n", player.x, firebox[i].position.x);
-            printf("Collide = %d\n",i);
+        if(detect_collision(player_local, firebox[i].box()))
             return true;
-        }
     }
     return false;
 };

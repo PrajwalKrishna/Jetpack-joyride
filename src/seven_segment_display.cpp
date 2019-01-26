@@ -32,29 +32,6 @@ void Segment::set_position(float x, float y) {
     this->position = glm::vec3(x, y, 0);
 }
 
-const double vertex[7][3] = {
-    {                0.0f, SEGMENT_LENGTH  , 0      },
-    { SEGMENT_LENGTH/2.0f, SEGMENT_LENGTH/2.0f, M_PI/2.0f },
-    { SEGMENT_LENGTH/2.0f,-SEGMENT_LENGTH/2.0f, M_PI/2.0f },
-    {                0.0f,-SEGMENT_LENGTH  , 0      },
-    {-SEGMENT_LENGTH/2.0f,-SEGMENT_LENGTH/2.0f, M_PI/2.0f },
-    {-SEGMENT_LENGTH/2.0f, SEGMENT_LENGTH/2.0f, M_PI/2.0f },
-    {            0.0f ,             0.0f, 0      }
-};
-
- const bool decoder[10][7] = {
-     {1,1,1,1,1,1,0}, //0
-     {0,1,1,0,0,0,0}, //1
-     {1,1,0,1,1,0,1}, //2
-     {1,1,1,1,0,0,1}, //3
-     {0,1,1,0,0,1,1}, //4
-     {1,0,1,1,0,1,1}, //5
-     {1,0,1,1,1,1,1}, //6
-     {1,1,1,0,0,0,0}, //7
-     {1,1,1,1,1,1,1}, //8
-     {1,1,1,1,0,1,1}  //9
- };
-
 Digit_display::Digit_display(float x, float y, int digit) {
     this->position = glm::vec3(x, y, 0);
     for(int i=0; i<7; i++){
@@ -104,6 +81,7 @@ Number_display::Number_display(float x, float y, int num) {
 
     float width = SEGMENT_LENGTH * (this->count)/1.0f * 1.5f;
     float height = SEGMENT_LENGTH * 2.5;
+    // printf("Hello = %f\n", width);
     static const GLfloat vertex_buffer_data[] = {
          width/2.0f, height/2.0f, 0.0f, // triangle 1 : begin
         -width/2.0f, height/2.0f, 0.0f,
@@ -113,7 +91,10 @@ Number_display::Number_display(float x, float y, int num) {
          width/2.0f,-height/2.0f, 0.0f, // triangle 2 : end
     };
 
-    this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, COLOR_BLACK, GL_FILL);
+    GLfloat *buf = new GLfloat[sizeof(vertex_buffer_data)];
+    std::copy(std::begin(vertex_buffer_data),std::end(vertex_buffer_data), buf);
+
+    this->object = create3DObject(GL_TRIANGLES, 2*3, buf, COLOR_BLACK, GL_FILL);
 }
 
 void Number_display::draw(glm::mat4 VP) {

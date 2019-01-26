@@ -1,5 +1,4 @@
 #include "player.h"
-
 #include "main.h"
 
 Player::Player(float x, float y, color_t color) {
@@ -118,15 +117,16 @@ bounding_box_t Player::box() {
 void Player::die() {
     if(this->shield)
         this->shield = false;
-    else
+    else {
         this->lives--;
-    this->death = 81;
-    printf("Player died \t Lives left = %d\n",this->lives);
+        this->death = 40;
+    }
+    // printf("Player died \t Lives left = %d\n",this->lives);
 }
 
 void Player::get_life() {
     this->lives++;
-    printf("Player gets life \t Lives left = %d\n",this->lives);
+    // printf("Player gets life \t Lives left = %d\n",this->lives);
 }
 
 bool Player::shoot(int counter) {

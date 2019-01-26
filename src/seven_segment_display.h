@@ -7,6 +7,28 @@ const float SEGMENT_LENGTH = 0.5;
 const float THICKNESS = 0.06;
 const int MAX_DIGITS = 19;
 
+const bool decoder[10][7] = {
+    {1,1,1,1,1,1,0}, //0
+    {0,1,1,0,0,0,0}, //1
+    {1,1,0,1,1,0,1}, //2
+    {1,1,1,1,0,0,1}, //3
+    {0,1,1,0,0,1,1}, //4
+    {1,0,1,1,0,1,1}, //5
+    {1,0,1,1,1,1,1}, //6
+    {1,1,1,0,0,0,0}, //7
+    {1,1,1,1,1,1,1}, //8
+    {1,1,1,1,0,1,1}  //9
+};
+
+const double vertex[7][3] = {
+    {                0.0f, SEGMENT_LENGTH  , 0      },
+    { SEGMENT_LENGTH/2.0f, SEGMENT_LENGTH/2.0f, M_PI/2.0f },
+    { SEGMENT_LENGTH/2.0f,-SEGMENT_LENGTH/2.0f, M_PI/2.0f },
+    {                0.0f,-SEGMENT_LENGTH  , 0      },
+    {-SEGMENT_LENGTH/2.0f,-SEGMENT_LENGTH/2.0f, M_PI/2.0f },
+    {-SEGMENT_LENGTH/2.0f, SEGMENT_LENGTH/2.0f, M_PI/2.0f },
+    {            0.0f ,             0.0f, 0      }
+};
 class Segment {
 public:
     Segment() {}
