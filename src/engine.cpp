@@ -8,13 +8,17 @@ bool filter_3 (Boomerang m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_4 (Heart m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_5 (Missile m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_6 (Dragon m) { return (m.position.x < FRAME - ARENA_WIDTH); }
+bool filter_7 (Firebeam m) { return (m.position.x < FRAME - ARENA_WIDTH); }
+bool filter_8 (Laser m) { return (m.position.x < FRAME - ARENA_WIDTH); }
+bool filter_9 (Waterball m) { return (m.position.y  == GRAVE); }
 
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
     this->roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
     this->player = Player(-7, FLOOR + 2.5f, COLOR_ORANGE);
-    this->score = 1;
-    this->number_display = Number_display(FRAME, CEILING + 1.0f, this->score);
+    this->score = 0;
+    this->score_display = Number_display(FRAME - 2.0f, CEILING + 1.0f, this->score);
+    this->life_display = Number_display(FRAME + 2.0f, CEILING + 1.0f, this->player.lives);
     this->counter = 0;
 }
 
@@ -23,7 +27,8 @@ void Engine::draw(glm::mat4 VP) {
     this->base.draw(VP);
 
     this->player.draw(VP);
-    this->number_display.draw(VP);
+    this->score_display.draw(VP);
+    this->life_display.draw(VP);
 
     this->magnets.erase(std::remove_if(this->magnets.begin(), this->magnets.end(), filter), this->magnets.end());
     for (auto it = this->magnets.begin(); it != this->magnets.end(); it++)
@@ -48,25 +53,39 @@ void Engine::draw(glm::mat4 VP) {
     this->dragons.erase(std::remove_if(this->dragons.begin(), this->dragons.end(), filter_6), this->dragons.end());
     for (auto it = this->dragons.begin(); it != this->dragons.end(); it++)
         it->draw(VP);
+
+    this->firebeams.erase(std::remove_if(this->firebeams.begin(), this->firebeams.end(), filter_7), this->firebeams.end());
+    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++)
+        it->draw(VP);
+
+    this->lasers.erase(std::remove_if(this->lasers.begin(), this->lasers.end(), filter_8), this->lasers.end());
+    for (auto it = this->lasers.begin(); it != this->lasers.end(); it++)
+        it->draw(VP);
+
+    this->waterballs.erase(std::remove_if(this->waterballs.begin(), this->waterballs.end(), filter_9), this->waterballs.end());
+    for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
+        it->draw(VP);
+
 }
 
 void Engine::tick() {
     this->counter++;
     this->player.tick();
-    this->number_display = Number_display(FRAME, CEILING + 1.0f, this->score);
+    this->score_display = Number_display(FRAME - 3.0f, CEILING + 1.0f, this->score);
+    this->life_display = Number_display(FRAME + 3.0f, CEILING + 1.0f, this->player.lives);
 
     // Produce stuffs
     if(counter%942 == 7)
         this->magnets.push_back(Magnet(FRAME + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
-    if((counter%32) == 7)
-        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_YELLOW));
     if((counter%64) == 7)
-        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_BLUE));
+        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 0));
     if((counter%128) == 7)
-        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
-    if(counter%256 == 7)
+        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 1));
+    if((counter%256) == 7)
+        this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 2));
+    if(counter%400 == 7)
         this->boomerangs.push_back(Boomerang(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH/2, SAFE_FLOOR + ARENA_HEIGHT, COLOR_ORANGE));
-    if(counter%256 == 7)
+    if(counter%625 == 7)
         this->boomerangs.push_back(Boomerang(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH/2, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_ORANGE));
     if((counter%512) == 7)
         this->hearts.push_back(Heart(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
@@ -74,6 +93,10 @@ void Engine::tick() {
         this->missiles.push_back(Missile(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
     if((counter%800) == 7)
         this->dragons.push_back(Dragon(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
+    if((counter%300) == 7)
+        this->firebeams.push_back(Firebeam(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
+    if((counter%200) == 7)
+        this->lasers.push_back(Laser(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, M_PI/(rand()%24)));
 
     // Tick other stuff
     for (auto it = this->magnets.begin(); it != this->magnets.end(); it++) {
@@ -90,6 +113,12 @@ void Engine::tick() {
         it->tick();
     for (auto it = this->dragons.begin(); it != this->dragons.end(); it++)
         it->tick(player.position.x, player.position.y);
+    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++)
+        it->tick();
+    for (auto it = this->lasers.begin(); it != this->lasers.end(); it++)
+        it->tick();
+    for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
+        it->tick();
 }
 
 void Engine::tick_input(GLFWwindow *window) {
@@ -109,7 +138,11 @@ void Engine::tick_input(GLFWwindow *window) {
       this->player.tickUp();
     }
     if (down) {
-        // player.shoot();
+        if(this->player.shoot(this->counter)) {
+            this->waterballs.push_back(Waterball(this->player.position.x + 0.1f, this->player.position.y - 0.1f));
+            this->waterballs.push_back(Waterball(this->player.position.x, this->player.position.y));
+            this->waterballs.push_back(Waterball(this->player.position.x - 0.1f, this->player.position.y + 0.1f));
+        }
     }
 }
 
@@ -149,6 +182,39 @@ void Engine::collider() {
         if(detect_collision(player.box(), it->box())){
             player.die();
             it->position.y = -100;
+        }
+    }
+    // Detect collision with missile
+    for (auto it = this->dragons.begin(); it != this->dragons.end(); it++) {
+        if(detect_collision(player.box(), it->box())){
+            player.die();
+            it->position.y = -100;
+        }
+    }
+
+    // Detect collision from firebeam
+    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++) {
+        if(detect_collision(player.box(), it->box())){
+            player.die();
+            it->position.y = -100;
+        }
+    }
+
+    // Detect collision from Laser
+    for (auto it = this->lasers.begin(); it != this->lasers.end(); it++) {
+        if(it->collision(player.box())){
+            player.die();
+            it->position.y = -100;
+        }
+    }
+
+    // Detect collision from waterballs
+    for (auto jt = this->waterballs.begin(); jt != this->waterballs.end(); jt++) {
+        for (auto it = this->lasers.begin(); it != this->lasers.end(); it++) {
+            if(it->collision(jt->box())){
+                jt->position.y = GRAVE;
+                it->position.y = -100;
+            }
         }
     }
 }

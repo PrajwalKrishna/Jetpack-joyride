@@ -11,6 +11,9 @@
 #include "missile.h"
 #include "dragon.h"
 #include "seven_segment_display.h"
+#include "firebeam.h"
+#include "laser.h"
+#include "waterball.h"
 
 #ifndef ENGINE_H
 #define ENGINE_H
@@ -28,13 +31,17 @@ private:
     Player player;
     int score;
     int counter;
-    Number_display number_display;
+    Number_display score_display;
+    Number_display life_display;
     std::vector<Magnet> magnets;
     std::vector<Coin> coins;
     std::vector<Boomerang> boomerangs;
     std::vector<Heart> hearts;
     std::vector<Missile> missiles;
     std::vector<Dragon> dragons;
+    std::vector<Firebeam> firebeams;
+    std::vector<Laser> lasers;
+    std::vector<Waterball> waterballs;
 };
 
 #endif // ENGINE_H

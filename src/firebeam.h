@@ -18,7 +18,7 @@ public:
 private:
     VAO *object;
     static constexpr double height = 0.1f;
-    static constexpr double width = 1.0f;
+    static constexpr double width = 1.6f;
     double speed_y = 0.1f;
 };
 

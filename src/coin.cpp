@@ -1,9 +1,11 @@
 #include "coin.h"
 #include "main.h"
 
-Coin::Coin(float x, float y, color_t color) {
+Coin::Coin(float x, float y, int type) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
+    color_t color = COIN_MAP[type];
+    this->type = type;
     speed = 1;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles

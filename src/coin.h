@@ -3,11 +3,12 @@
 #ifndef COIN_H
 #define COIN_H
 
+const color_t COIN_MAP[3] = {COLOR_YELLOW, COLOR_BLUE, COLOR_RED};
 
 class Coin {
 public:
     Coin() {}
-    Coin(float x, float y, color_t color);
+    Coin(float x, float y, int type);
     glm::vec3 position;
     float rotation;
     void draw(glm::mat4 VP);
@@ -15,6 +16,7 @@ public:
     void tick();
     double speed;
     bounding_box_t box();
+    int type;
 private:
     VAO *object;
     static constexpr double height = 0.4f;

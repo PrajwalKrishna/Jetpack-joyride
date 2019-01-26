@@ -7,6 +7,7 @@ Player::Player(float x, float y, color_t color) {
     this->rotation = 0;
     speed_y = 0;
     speed_x = 0.05;
+    this->pre_count = 0;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
@@ -78,6 +79,14 @@ void Player::die() {
 void Player::get_life() {
     this->lives++;
     printf("Player gets life \t Lives left = %d\n",this->lives);
+}
+
+bool Player::shoot(int counter) {
+    if(counter - this->pre_count > 200){
+        this->pre_count = counter;
+        return true;
+    }
+    return false;
 }
 
 void Player::magnetic_motion(float x, float y) {

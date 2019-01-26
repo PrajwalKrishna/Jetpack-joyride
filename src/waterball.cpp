@@ -55,7 +55,6 @@ void Waterball::tick() {
 }
 
  void Waterball::die(){
-     printf("Waterball died\n");
      this->position.y = GRAVE;
 }
 

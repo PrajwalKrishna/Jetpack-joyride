@@ -19,13 +19,15 @@ public:
     void magnetic_motion(float x, float y);
     void die();
     void get_life();
+    int lives = 3;
+    bool shoot(int counter);
 private:
     VAO *object;
     double speed_x;
     double speed_y;
+    int pre_count = 0;
     static constexpr double height = 1.0f;
     static constexpr double width = 0.5f;
-    int lives = 3;
 };
 
 #endif // BALL_H
