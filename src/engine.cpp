@@ -13,6 +13,7 @@ bool filter_8 (Laser m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_9 (Waterball m) { return (m.position.y  == GRAVE); }
 bool filter_10 (Shield m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_11 (Iceball m) { return (m.position.y  == GRAVE); }
+bool filter_12 (Ring m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
@@ -76,6 +77,10 @@ void Engine::draw(glm::mat4 VP) {
     for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++)
         it->draw(VP);
 
+    this->rings.erase(std::remove_if(this->rings.begin(), this->rings.end(), filter_12), this->rings.end());
+    for (auto it = this->rings.begin(); it != this->rings.end(); it++)
+        it->draw(VP);
+
 }
 
 void Engine::tick() {
@@ -85,7 +90,7 @@ void Engine::tick() {
     this->life_display = Number_display(FRAME + 3.0f, CEILING + 1.0f, this->player.lives);
 
     // Produce stuffs
-    if(counter%427 == 7)
+    if(counter%827 == 7)
         this->magnets.push_back(Magnet(FRAME + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
     if((counter%67) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 0));
@@ -106,9 +111,11 @@ void Engine::tick() {
     if((counter%1507) == 7)
         this->firebeams.push_back(Firebeam(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
     if((counter%209) == 7)
-        this->lasers.push_back(Laser(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, M_PI/(rand()%24)));
+        this->lasers.push_back(Laser(FRAME + ARENA_WIDTH/2 + rand()%(ARENA_WIDTH - 2), SAFE_FLOOR + rand()%ARENA_HEIGHT, M_PI/(rand()%24)));
     if((counter%611) == 7)
         this->shields.push_back(Shield(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
+    if((counter%1611) == 7)
+        this->rings.push_back(Ring(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + 1 + rand()%(ARENA_HEIGHT-2)));
 
     // Tick other stuff
     for (auto it = this->magnets.begin(); it != this->magnets.end(); it++) {

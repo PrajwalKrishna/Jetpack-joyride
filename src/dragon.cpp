@@ -26,7 +26,7 @@ Dragon::Dragon(float x, float y) {
 void Dragon::draw(glm::mat4 VP) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate (this->position);    // glTranslatef
-    glm::mat4 rotate    = glm::rotate((float) (this->rotation * M_PI / 180.0f), glm::vec3(1, 0, 0));
+    glm::mat4 rotate    = glm::rotate((float) (this->rotation), glm::vec3(0, 0, 1));
     // No need as coords centered at 0, 0, 0 of  around which we waant to rotate
     // rotate          = rotate * glm::translate(glm::vec3(0, -width, 0));
     Matrices.model *= (translate * rotate);
@@ -55,6 +55,11 @@ void Dragon::tick(float player_x, float player_y) {
 
     this->position.x += (player_x - this->position.x)/300;
     this->position.y += (player_y - this->position.y)/300;
+
+    if(player_y - this->position.y > 0)
+        this->rotation = -atan((player_x - this->position.x)/(player_y - this->position.y)) - M_PI/2;
+    else
+        this->rotation = -atan((player_x - this->position.x)/(player_y - this->position.y)) + M_PI/2;
 }
 
 bounding_box_t Dragon::box() {

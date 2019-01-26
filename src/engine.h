@@ -16,6 +16,7 @@
 #include "shield.h"
 #include "waterball.h"
 #include "iceball.h"
+#include "semi_ring.h"
 
 #ifndef ENGINE_H
 #define ENGINE_H
@@ -47,6 +48,7 @@ private:
     std::vector<Waterball> waterballs;
     std::vector<Shield> shields;
     std::vector<Iceball> iceballs;
+    std::vector<Ring> rings;
 };
 
 #endif // ENGINE_H
