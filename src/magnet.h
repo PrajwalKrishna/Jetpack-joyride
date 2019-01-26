@@ -11,7 +11,7 @@ public:
     float rotation;
     void draw(glm::mat4 VP);
     void set_position(float x, float y);
-    bool tick();
+    bool tick(float player_x, float player_y);
 private:
     VAO *object[2];
     static constexpr double height = 1.2f;

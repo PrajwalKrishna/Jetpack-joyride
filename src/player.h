@@ -15,15 +15,26 @@ public:
     void tick();
     void tickUp();
     void move(int direction);
-    double speed;
     bounding_box_t box();
+    void magnetic_motion(float x, float y);
     void die();
+    void get_life();
+    int lives = 5;
+    bool shoot(int counter);
+    bool shield;
 private:
     VAO *object;
+    VAO *head;
+    VAO *shield_object;
+    VAO *jetpack;
+    VAO *dead_object;
     double speed_x;
+    double speed_y;
+    int pre_count = 0;
+    bool flying = false;
+    int death = 0;
     static constexpr double height = 1.0f;
     static constexpr double width = 0.5f;
-    int lives = 3;
 };
 
 #endif // BALL_H

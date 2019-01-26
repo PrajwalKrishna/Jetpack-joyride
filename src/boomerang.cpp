@@ -6,7 +6,7 @@ Boomerang::Boomerang(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     this->speed_y = 0;
-    this->speed_x = 0.08f;
+    this->speed_x = 0.15f;
 
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
@@ -45,8 +45,11 @@ void Boomerang::tick() {
     this->speed_y += GRAVITY/8;
     if(this->position.y >= CEILING - height/2.0f - this->speed_y)
         this->speed_y *= -1;
-    else if(this->position.y <= FLOOR + height/2.0f - this->speed_y)
+    else if(this->position.y <= FLOOR + height/2.0f - this->speed_y){
         this->speed_y *= -1;
+        this->position.y = -100;
+        this->speed_x *= -1000;
+    }
     else
         this->position.y -= this->speed_y;
 

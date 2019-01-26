@@ -14,10 +14,11 @@ public:
     void tick();
     bounding_box_t box();
 private:
-    VAO *object;
+    VAO *object[2];
     static constexpr double height = 0.4f;
-    static constexpr double width =  1.0f;
-    static constexpr double speed_x = 0.04f;
+    static constexpr double thickness = 0.3f;
+    static constexpr double width =  1.2f;
+    static constexpr double speed_x = 0.1f;
 };
 
 #endif // MISSILE_H

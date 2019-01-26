@@ -17,7 +17,7 @@ Heart::Heart(float x, float y) {
               0.0f,-height/2.0f, 0.0f  // triangle 3 : end
    };
 
-    this->object = create3DObject(GL_TRIANGLES, 3*3, vertex_buffer_data, COLOR_RED, GL_FILL);
+    this->object = create3DObject(GL_TRIANGLES, 3*3, vertex_buffer_data, COLOR_PINK, GL_FILL);
 }
 
 void Heart::draw(glm::mat4 VP) {

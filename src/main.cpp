@@ -1,19 +1,8 @@
-#include "main.h"
-#include "coin.h"
-
-#include "platform.h"
-#include "player.h"
-#include "timer.h"
 #include <unistd.h>
-#include "laser.h"
-#include "firebeam.h"
-#include "boomerang.h"
-#include "seven_segment_display.h"
-#include "waterball.h"
-#include "missile.h"
-#include "heart.h"
-#include "dragon.h"
-#include "magnet.h"
+
+#include "main.h"
+#include "engine.h"
+#include "timer.h"
 
 using namespace std;
 
@@ -25,22 +14,7 @@ GLFWwindow *window;
 * Customizable functions *
 **************************/
 
-Player player;
-int points = 0;
-Platform platform,roof;
-Coin coin[100];
-
-Laser laser;
-Boomerang boomerang;
-Firebeam firebeam;
-Waterball waterball;
-
-Number_display number_display;
-Digit_display digit_display;
-Missile missile;
-Heart heart;
-Dragon dragon;
-Magnet magnet;
+Engine engine;
 
 float screen_zoom = 0.5, screen_center_x = 0, screen_center_y = 0;
 float camera_rotation_angle = 90;
@@ -83,61 +57,7 @@ void draw() {
     glm::mat4 MVP;  // MVP = Projection * View * Model
 
     // Scene render
-    player.draw(VP);
-    platform.draw(VP);
-    roof.draw(VP);
-    laser.draw(VP);
-    firebeam.draw(VP);
-    boomerang.draw(VP);
-    waterball.draw(VP);
-
-    missile.draw(VP);
-    heart.draw(VP);
-    digit_display.draw(VP);
-    number_display.draw(VP);
-    dragon.draw(VP);
-    magnet.draw(VP);
-
-    // Coin render
-    for(int i=0;i<=20;++i)
-        coin[i].draw(VP);
-}
-
-void tick_input(GLFWwindow *window) {
-    int left  = glfwGetKey(window, GLFW_KEY_LEFT);
-    int right = glfwGetKey(window, GLFW_KEY_RIGHT);
-    int space = glfwGetKey(window, GLFW_KEY_SPACE);
-    int up = glfwGetKey(window, GLFW_KEY_UP);
-    int down = glfwGetKey(window, GLFW_KEY_DOWN);
-
-    if (left) {
-        player.move(0);
-    }
-    if (right) {
-      player.move(1);
-    }
-    if (space || up) {
-      player.tickUp();
-    }
-    if (down) {
-        // player.shoot();
-    }
-}
-
-void tick_elements() {
-    player.tick();
-    for(int i=0;i<=20;++i)
-        coin[i].tick();
-
-    laser.tick();
-    firebeam.tick();
-    boomerang.tick();
-    waterball.tick();
-
-    missile.tick();
-    heart.tick();
-    dragon.tick(player.position.x, player.position.y);
-    magnet.tick();
+    engine.draw(VP);
 }
 
 /* Initialize the OpenGL rendering properties */
@@ -146,26 +66,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     /* Objects should be created before any other gl function and shaders */
     // Create the models
 
-    player = Player(-7, FLOOR + 2.5f, COLOR_ORANGE);
-    platform = Platform(-8, FLOOR, COLOR_GREEN);
-    roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
-    laser = Laser(4, FLOOR + 9, M_PI/6);
-    firebeam = Firebeam(0 ,0 , COLOR_YELLOW);
-    boomerang = Boomerang( 0, 0, COLOR_ORANGE);
-    waterball = Waterball(-1, -1);
-
-    number_display = Number_display(1, 1, 1459);
-    digit_display = Digit_display(1, 1, 9);
-    missile = Missile(2, 2, COLOR_BLUE);
-    heart = Heart(4, 4);
-    dragon = Dragon(3,4);
-    magnet = Magnet(-2,-2);
-
-    for(int i=0;i<=20;++i)
-    {
-        int random = rand()%5;
-        coin[i] = Coin(2.0+i*4,random- 2.0,COLOR_YELLOW);
-    }
+    engine = Engine(0);
 
     // Create and compile our GLSL program from the shaders
     programID = LoadShaders("Sample_GL.vert", "Sample_GL.frag");
@@ -209,39 +110,10 @@ int main(int argc, char **argv) {
             // Swap Frame Buffer in double buffering
             glfwSwapBuffers(window);
 
-            // Detect collision from Laser
-            if(laser.collision(player.box())) {
-                    player.die();
-            }
+            engine.collider();
+            engine.tick();
+            engine.tick_input(window);
 
-            // Detect collision with firebeam
-            if(detect_collision(player.box(), firebeam.box())){
-                player.die();
-            }
-
-            // Detect collision with boomerang
-            if(detect_collision(player.box(), boomerang.box())){
-                player.die();
-            }
-
-            // Detect collision with missile
-            if(detect_collision(player.box(), missile.box())){
-                player.die();
-            }
-
-            // Detect coin capture
-            for(int i=0; i<20 ; i++)
-            {
-                if(detect_collision(player.box(),coin[i].box()))
-                {
-                    coin[i].position.y -= 200;
-                    points++;
-                    printf("Points earned = %d\n",points);
-                }
-            }
-
-            tick_elements();
-            tick_input(window);
             FRAME += SCREEN_SPEED;
             SCREEN_SPEED += SCREEN_ACCELERATION;
         }
@@ -251,6 +123,8 @@ int main(int argc, char **argv) {
 
         // Sleep for CPU freeup
         usleep(10000);
+        if(engine.get_life() == 0)
+            quit(window);
     }
 
     quit(window);

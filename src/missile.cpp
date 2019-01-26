@@ -10,14 +10,19 @@ Missile::Missile(float x, float y, color_t color) {
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
         width/2.0f, height/2.0f, 0.0f, // triangle 1 : begin
-       -width/2.0f, height/2.0f, 0.0f,
-       -width/2.0f,-height/2.0f, 0.0f, // triangle 1 : end
+       -width/2.0f + thickness, height/2.0f, 0.0f,
+       -width/2.0f + thickness,-height/2.0f, 0.0f, // triangle 1 : end
         width/2.0f,-height/2.0f, 0.0f, // triangle 2 : begin
-       -width/2.0f,-height/2.0f, 0.0f,
+       -width/2.0f + thickness,-height/2.0f, 0.0f,
         width/2.0f, height/2.0f, 0.0f, // triangle 2 : end
    };
-
-    this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
+   static const GLfloat vertex_buffer_data_2[] = {
+      -width/2.0f + thickness, height/2.0f + thickness, 0.0f,
+      -width/2.0f, 0.0f, 0.0f, // triangle 1 : end
+      -width/2.0f + thickness,-height/2.0f - thickness, 0.0f,
+   };
+   this->object[0] = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
+   this->object[1] = create3DObject(GL_TRIANGLES, 3, vertex_buffer_data_2, COLOR_BLUE, GL_FILL);
 }
 
 void Missile::draw(glm::mat4 VP) {
@@ -29,7 +34,8 @@ void Missile::draw(glm::mat4 VP) {
     Matrices.model *= (translate * rotate);
     glm::mat4 MVP = VP * Matrices.model;
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(this->object);
+    draw3DObject(this->object[0]);
+    draw3DObject(this->object[1]);
 }
 
 void Missile::set_position(float x, float y) {
