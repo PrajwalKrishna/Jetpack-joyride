@@ -4,12 +4,6 @@
 #include "engine.h"
 #include "timer.h"
 
-#include "firebeam.h"
-#include "waterball.h"
-#include "missile.h"
-#include "dragon.h"
-#include "magnet.h"
-
 using namespace std;
 
 GLMatrices Matrices;
@@ -129,6 +123,8 @@ int main(int argc, char **argv) {
 
         // Sleep for CPU freeup
         usleep(10000);
+        if(engine.get_life() == 0)
+            quit(window);
     }
 
     quit(window);

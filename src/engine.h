@@ -13,6 +13,7 @@
 #include "seven_segment_display.h"
 #include "firebeam.h"
 #include "laser.h"
+#include "shield.h"
 #include "waterball.h"
 
 #ifndef ENGINE_H
@@ -25,6 +26,7 @@ public:
     void draw(glm::mat4 VP);
     void tick();
     void collider();
+    int get_life();
     void tick_input(GLFWwindow *window);
 private:
     Platform base,roof;
@@ -42,6 +44,7 @@ private:
     std::vector<Firebeam> firebeams;
     std::vector<Laser> lasers;
     std::vector<Waterball> waterballs;
+    std::vector<Shield> shields;
 };
 
 #endif // ENGINE_H

@@ -37,15 +37,11 @@ void Dragon::set_position(float x, float y) {
 
 void Dragon::tick(float player_x, float player_y) {
     // Screen motion
-        this->position.x += SCREEN_SPEED/2;
-    // X Axis
+    this->position.x += SCREEN_SPEED/3.0f;
     this->position.x -= speed_x;
 
-    //Y Axis
-    if(this->position.y > player_y)
-        this->position.y -= 0.03;
-    else
-        this->position.y += 0.03;
+    this->position.x += (player_x - this->position.x)/300;
+    this->position.y += (player_y - this->position.y)/300;
 }
 
 bounding_box_t Dragon::box() {

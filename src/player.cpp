@@ -6,8 +6,9 @@ Player::Player(float x, float y, color_t color) {
     this->position = glm::vec3(x, y, 0);
     this->rotation = 0;
     speed_y = 0;
-    speed_x = 0.05;
+    speed_x = 0.1f;
     this->pre_count = 0;
+    this->shield = false;
     // Our vertices. Three consecutive floats give a vertex; Three consecutive vertices give a triangle.
     // A rectangle has 2 triangles
     static const GLfloat vertex_buffer_data[] = {
@@ -18,8 +19,16 @@ Player::Player(float x, float y, color_t color) {
         -width/2.0f,-height/2.0f, 0.0f,
          width/2.0f,-height/2.0f, 0.0f, // triangle 2 : end
     };
-
+    static const GLfloat vertex_buffer_data_2[] = {
+         width/1.0f, 3 * height/4.0f, 0.0f, // triangle 1 : begin
+        -width/1.0f, 3 * height/4.0f, 0.0f,
+               0.0f,-3 * height/4.0f, 0.0f, // triangle 1 : end
+               0.0f, 3 * height/4.0f, 0.0f, // triangle 2 : begin
+        -width/1.0f,-3 * height/4.0f, 0.0f,
+         width/1.0f,-3 * height/4.0f, 0.0f, // triangle 2 : end
+    };
     this->object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data, color, GL_FILL);
+    this->shield_object = create3DObject(GL_TRIANGLES, 2*3, vertex_buffer_data_2, COLOR_GREY, GL_FILL);
 }
 
 void Player::draw(glm::mat4 VP) {
@@ -31,6 +40,8 @@ void Player::draw(glm::mat4 VP) {
     Matrices.model *= (translate * rotate);
     glm::mat4 MVP = VP * Matrices.model;
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    if(this->shield)
+        draw3DObject(this->shield_object);
     draw3DObject(this->object);
 }
 
@@ -72,7 +83,10 @@ bounding_box_t Player::box() {
 }
 
 void Player::die() {
-    this->lives--;
+    if(this->shield)
+        this->shield = false;
+    else
+        this->lives--;
     printf("Player died \t Lives left = %d\n",this->lives);
 }
 

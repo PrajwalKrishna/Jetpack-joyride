@@ -19,10 +19,12 @@ public:
     void magnetic_motion(float x, float y);
     void die();
     void get_life();
-    int lives = 3;
+    int lives = 5;
     bool shoot(int counter);
+    bool shield;
 private:
     VAO *object;
+    VAO *shield_object;
     double speed_x;
     double speed_y;
     int pre_count = 0;

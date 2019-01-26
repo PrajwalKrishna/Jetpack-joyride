@@ -11,6 +11,7 @@ bool filter_6 (Dragon m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_7 (Firebeam m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_8 (Laser m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_9 (Waterball m) { return (m.position.y  == GRAVE); }
+bool filter_10 (Shield m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
@@ -66,6 +67,10 @@ void Engine::draw(glm::mat4 VP) {
     for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
         it->draw(VP);
 
+    this->shields.erase(std::remove_if(this->shields.begin(), this->shields.end(), filter_10), this->shields.end());
+    for (auto it = this->shields.begin(); it != this->shields.end(); it++)
+        it->draw(VP);
+
 }
 
 void Engine::tick() {
@@ -77,15 +82,15 @@ void Engine::tick() {
     // Produce stuffs
     if(counter%942 == 7)
         this->magnets.push_back(Magnet(FRAME + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
-    if((counter%64) == 7)
+    if((counter%67) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 0));
-    if((counter%128) == 7)
+    if((counter%127) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 1));
-    if((counter%256) == 7)
+    if((counter%259) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 2));
-    if(counter%400 == 7)
+    if(counter%401 == 7)
         this->boomerangs.push_back(Boomerang(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH/2, SAFE_FLOOR + ARENA_HEIGHT, COLOR_ORANGE));
-    if(counter%625 == 7)
+    if(counter%629 == 7)
         this->boomerangs.push_back(Boomerang(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH/2, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_ORANGE));
     if((counter%512) == 7)
         this->hearts.push_back(Heart(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
@@ -93,10 +98,12 @@ void Engine::tick() {
         this->missiles.push_back(Missile(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
     if((counter%800) == 7)
         this->dragons.push_back(Dragon(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
-    if((counter%300) == 7)
+    if((counter%503) == 7)
         this->firebeams.push_back(Firebeam(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
-    if((counter%200) == 7)
+    if((counter%209) == 7)
         this->lasers.push_back(Laser(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, M_PI/(rand()%24)));
+    if((counter%611) == 7)
+        this->shields.push_back(Shield(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
 
     // Tick other stuff
     for (auto it = this->magnets.begin(); it != this->magnets.end(); it++) {
@@ -146,6 +153,10 @@ void Engine::tick_input(GLFWwindow *window) {
     }
 }
 
+int Engine::get_life() {
+        return this->player.lives;
+}
+
 void Engine::collider() {
     // Detect coin capture
     for (auto it = this->coins.begin(); it != this->coins.end(); it++) {
@@ -153,11 +164,7 @@ void Engine::collider() {
         {
             it->position.y -= 100;
             score++;
-            // if(it->color == COLOR_RED)
-            //     score++;
-            // if(it->color == COLOR_BLUE)
-            //     score+=2;
-            // printf("Points earned = %d\n",score);
+            score+=it->type;
         }
     }
 
@@ -217,4 +224,13 @@ void Engine::collider() {
             }
         }
     }
+
+    // Detect collision from shield
+    for (auto it = this->shields.begin(); it != this->shields.end(); it++) {
+        if(detect_collision(player.box(), it->box())){
+            player.shield = true;
+            it->position.y = -100;
+        }
+    }
+
 }
