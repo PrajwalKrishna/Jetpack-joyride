@@ -15,6 +15,7 @@
 #include "laser.h"
 #include "shield.h"
 #include "waterball.h"
+#include "iceball.h"
 
 #ifndef ENGINE_H
 #define ENGINE_H
@@ -45,6 +46,7 @@ private:
     std::vector<Laser> lasers;
     std::vector<Waterball> waterballs;
     std::vector<Shield> shields;
+    std::vector<Iceball> iceballs;
 };
 
 #endif // ENGINE_H

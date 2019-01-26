@@ -12,6 +12,7 @@ bool filter_7 (Firebeam m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_8 (Laser m) { return (m.position.x < FRAME - ARENA_WIDTH); }
 bool filter_9 (Waterball m) { return (m.position.y  == GRAVE); }
 bool filter_10 (Shield m) { return (m.position.x < FRAME - ARENA_WIDTH); }
+bool filter_11 (Iceball m) { return (m.position.y  == GRAVE); }
 
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
@@ -71,6 +72,10 @@ void Engine::draw(glm::mat4 VP) {
     for (auto it = this->shields.begin(); it != this->shields.end(); it++)
         it->draw(VP);
 
+    this->iceballs.erase(std::remove_if(this->iceballs.begin(), this->iceballs.end(), filter_11), this->iceballs.end());
+    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++)
+        it->draw(VP);
+
 }
 
 void Engine::tick() {
@@ -118,13 +123,21 @@ void Engine::tick() {
         it->tick();
     for (auto it = this->missiles.begin(); it != this->missiles.end(); it++)
         it->tick();
-    for (auto it = this->dragons.begin(); it != this->dragons.end(); it++)
+    for (auto it = this->dragons.begin(); it != this->dragons.end(); it++) {
         it->tick(player.position.x, player.position.y);
+        if(it->shoot(counter)) {
+            this->iceballs.push_back(Iceball(it->position.x, it->position.y, this->player.position.x, this->player.position.y));
+        }
+    }
     for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++)
         it->tick();
     for (auto it = this->lasers.begin(); it != this->lasers.end(); it++)
         it->tick();
     for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
+        it->tick();
+    for (auto it = this->shields.begin(); it != this->shields.end(); it++)
+        it->tick();
+    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++)
         it->tick();
 }
 
@@ -233,4 +246,12 @@ void Engine::collider() {
         }
     }
 
+    // Check death due to iceballs
+    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++) {
+        if(detect_collision(player.box(),it->box())){
+            it->position.y = GRAVE;
+            player.die();
+            printf("Yeah\n");
+        }
+    }
 }
