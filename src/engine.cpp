@@ -85,7 +85,7 @@ void Engine::tick() {
     this->life_display = Number_display(FRAME + 3.0f, CEILING + 1.0f, this->player.lives);
 
     // Produce stuffs
-    if(counter%942 == 7)
+    if(counter%427 == 7)
         this->magnets.push_back(Magnet(FRAME + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
     if((counter%67) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 0));
@@ -99,11 +99,11 @@ void Engine::tick() {
         this->boomerangs.push_back(Boomerang(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH/2, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_ORANGE));
     if((counter%512) == 7)
         this->hearts.push_back(Heart(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
-    if((counter%600) == 7)
+    if((counter%659) == 7)
         this->missiles.push_back(Missile(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
-    if((counter%800) == 7)
+    if((counter%817) == 7)
         this->dragons.push_back(Dragon(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
-    if((counter%503) == 7)
+    if((counter%1507) == 7)
         this->firebeams.push_back(Firebeam(FRAME + ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, COLOR_RED));
     if((counter%209) == 7)
         this->lasers.push_back(Laser(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, M_PI/(rand()%24)));

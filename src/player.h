@@ -24,10 +24,15 @@ public:
     bool shield;
 private:
     VAO *object;
+    VAO *head;
     VAO *shield_object;
+    VAO *jetpack;
+    VAO *dead_object;
     double speed_x;
     double speed_y;
     int pre_count = 0;
+    bool flying = false;
+    int death = 0;
     static constexpr double height = 1.0f;
     static constexpr double width = 0.5f;
 };
