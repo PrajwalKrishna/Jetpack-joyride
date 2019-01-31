@@ -46,9 +46,8 @@ void Boomerang::tick() {
     if(this->position.y >= CEILING - height/2.0f - this->speed_y)
         this->speed_y *= -1;
     else if(this->position.y <= FLOOR + height/2.0f - this->speed_y){
-        this->speed_y *= -1;
         this->position.y = -100;
-        this->speed_x *= -1000;
+        this->speed_x = -1000;
     }
     else
         this->position.y -= this->speed_y;

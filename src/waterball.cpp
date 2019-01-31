@@ -40,22 +40,18 @@ void Waterball::set_position(float x, float y) {
 
 void Waterball::tick() {
     // Y axis
-    if(this->position.y == GRAVE)
+    if(this->position.y == -100)
         return;
     this->speed_y -= GRAVITY;
     if(this->position.y >= CEILING - height/2.0f)
-        this->die();
+        this->position.y = -100;
     else if(this->position.y <= FLOOR + height/2.0f)
-        this->die();
+        this->position.y = -100;
     else
         this->position.y += this->speed_y;
 
     // X Axis
     this->position.x += this->speed_x;
-}
-
- void Waterball::die(){
-     this->position.y = GRAVE;
 }
 
  bounding_box_t Waterball::box() {

@@ -11,7 +11,7 @@ const int WINDOW_HEIGHT = 1000;
 const int WINDOW_WIDTH = 1480;
 const int LEVEL_LENGTH = 1000;
 
-const float SCREEN_ACCELERATION = 0.00005;
+const float SCREEN_ACCELERATION = 0.00005f;
 const float MAGNETIC_ACCELERATION = 25.0f;
 
 const int ARENA_HEIGHT = 10;

@@ -22,14 +22,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-template <typename T> bool filter(T& type) { return ((type.position.x < FRAME - ARENA_WIDTH) || (type.position.y  == GRAVE)); }
-
-template <typename T> void draw_template(std::vector<T> type, glm::mat4 VP) {
-    type.erase(std::remove_if(type.begin(), type.end(), filter<T>), type.end());
-    for (auto it = type.begin(); it != type.end(); it++)
-        it->draw(VP);
-}
-
 class Engine {
 public:
     Engine() {}

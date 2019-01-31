@@ -1,5 +1,31 @@
 #include "engine.h"
 
+template <typename T> bool filter(T& type) { return (type.position.x < FRAME - ARENA_WIDTH); }
+
+// Render object
+template <typename T> void draw_template(std::vector<T> &type, glm::mat4 VP) {
+    type.erase(std::remove_if(type.begin(), type.end(), filter<T>), type.end());
+    for (auto it = type.begin(); it != type.end(); it++)
+        it->draw(VP);
+}
+
+//Tick object
+template <typename T> void tick_template(std::vector<T> &type) {
+    for (auto it = type.begin(); it != type.end(); it++)
+        it->tick();
+}
+
+// Detect collision from object
+template <typename T> bool detect_collision_template(std::vector<T> &type, Player &player) {
+    for (auto it = type.begin(); it != type.end(); it++) {
+        if(detect_collision(player.box(), it->box())){
+            player.die();
+            it->position.y = -100;
+            return true;
+        }
+    }
+}
+
 Engine::Engine(int level) {
     this->base = Platform(-8, FLOOR, COLOR_GREEN);
     this->roof = Platform(-8, CEILING + 2.0f, COLOR_GREEN);
@@ -39,7 +65,7 @@ void Engine::tick() {
     this->life_display = Number_display(FRAME + 3.0f, CEILING + 1.0f, this->player.lives);
 
     // Produce stuffs
-    if(counter%827 == 7)
+    if(counter%427 == 7)
         this->magnets.push_back(Magnet(FRAME + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT));
     if((counter%67) == 7)
         this->coins.push_back(Coin(FRAME + ARENA_WIDTH + rand()%ARENA_WIDTH, SAFE_FLOOR + rand()%ARENA_HEIGHT, 0));
@@ -66,35 +92,28 @@ void Engine::tick() {
     if((counter%1611) == 7)
         this->rings.push_back(Ring(FRAME + ARENA_WIDTH/2 + rand()%ARENA_WIDTH, SAFE_FLOOR + 1 + rand()%(ARENA_HEIGHT-2)));
 
-    // Tick other stuff
+    // Tick other magnets
     for (auto it = this->magnets.begin(); it != this->magnets.end(); it++) {
         it->tick(player.position.x, player.position.y);
         player.magnetic_motion(it->position.x, it->position.y);
     }
-    for (auto it = this->coins.begin(); it != this->coins.end(); it++)
-        it->tick();
-    for (auto it = this->boomerangs.begin(); it != this->boomerangs.end(); it++)
-        it->tick();
-    for (auto it = this->hearts.begin(); it != this->hearts.end(); it++)
-        it->tick();
-    for (auto it = this->missiles.begin(); it != this->missiles.end(); it++)
-        it->tick();
+
+    tick_template(this->coins);
+    tick_template(this->boomerangs);
+    tick_template(this->hearts);
+    tick_template(this->missiles);
+    tick_template(this->firebeams);
+    tick_template(this->lasers);
+    tick_template(this->waterballs);
+    tick_template(this->shields);
+    tick_template(this->iceballs);
+
     for (auto it = this->dragons.begin(); it != this->dragons.end(); it++) {
         it->tick(player.position.x, player.position.y);
         if(it->shoot(counter)) {
             this->iceballs.push_back(Iceball(it->position.x, it->position.y, this->player.position.x, this->player.position.y));
         }
     }
-    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++)
-        it->tick();
-    for (auto it = this->lasers.begin(); it != this->lasers.end(); it++)
-        it->tick();
-    for (auto it = this->waterballs.begin(); it != this->waterballs.end(); it++)
-        it->tick();
-    for (auto it = this->shields.begin(); it != this->shields.end(); it++)
-        it->tick();
-    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++)
-        it->tick();
 }
 
 void Engine::tick_input(GLFWwindow *window) {
@@ -137,44 +156,25 @@ void Engine::collider() {
         }
     }
 
-    // Detect collision with boomerang
-    for (auto it = this->boomerangs.begin(); it != this->boomerangs.end(); it++) {
-        if(detect_collision(player.box(), it->box())){
-            player.die();
-            it->position.y = -100;
-            it->speed_x = -10000;
-        }
-    }
-    // Detect heart capture
-    for (auto it = this->hearts.begin(); it != this->hearts.end(); it++) {
-        if(detect_collision(player.box(),it->box()))
-        {
-            it->position.y -= 100;
-            player.get_life();
-        }
-    }
-    // Detect collision with missile
-    for (auto it = this->missiles.begin(); it != this->missiles.end(); it++) {
-        if(detect_collision(player.box(), it->box())){
-            player.die();
-            it->position.y = -100;
-        }
-    }
-    // Detect collision with missile
-    for (auto it = this->dragons.begin(); it != this->dragons.end(); it++) {
-        if(detect_collision(player.box(), it->box())){
-            player.die();
-            it->position.y = -100;
-        }
+    detect_collision_template(this->boomerangs, this->player);
+    detect_collision_template(this->missiles, this->player);
+    detect_collision_template(this->dragons, this->player);
+    detect_collision_template(this->firebeams, this->player);
+    detect_collision_template(this->iceballs, this->player);
+
+    // Detect collision from shield
+    // Needs an extra step
+    if(detect_collision_template(this->shields, this->player)){
+        player.shield = true;
     }
 
-    // Detect collision from firebeam
-    for (auto it = this->firebeams.begin(); it != this->firebeams.end(); it++) {
-        if(detect_collision(player.box(), it->box())){
-            player.die();
-            it->position.y = -100;
-        }
+    // Detect heart capture
+    // Needs to give 2 extra lives as not died
+    if(detect_collision_template(this->hearts, this->player)){
+        player.get_life();
+        player.get_life();
     }
+
 
     // Detect collision from Laser
     for (auto it = this->lasers.begin(); it != this->lasers.end(); it++) {
@@ -188,25 +188,9 @@ void Engine::collider() {
     for (auto jt = this->waterballs.begin(); jt != this->waterballs.end(); jt++) {
         for (auto it = this->lasers.begin(); it != this->lasers.end(); it++) {
             if(it->collision(jt->box())){
-                jt->position.y = GRAVE;
+                jt->position.y = -100;
                 it->position.y = -100;
             }
-        }
-    }
-
-    // Detect collision from shield
-    for (auto it = this->shields.begin(); it != this->shields.end(); it++) {
-        if(detect_collision(player.box(), it->box())){
-            player.shield = true;
-            it->position.y = -100;
-        }
-    }
-
-    // Check death due to iceballs
-    for (auto it = this->iceballs.begin(); it != this->iceballs.end(); it++) {
-        if(detect_collision(player.box(),it->box())){
-            it->position.y = GRAVE;
-            player.die();
         }
     }
 }

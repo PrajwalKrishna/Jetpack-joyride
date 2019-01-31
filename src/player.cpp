@@ -119,7 +119,7 @@ void Player::die() {
         this->shield = false;
     else {
         this->lives--;
-        this->death = 40;
+        this->death = 10;
     }
     // printf("Player died \t Lives left = %d\n",this->lives);
 }

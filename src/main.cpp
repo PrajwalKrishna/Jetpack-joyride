@@ -105,12 +105,14 @@ int main(int argc, char **argv) {
             // Swap Frame Buffer in double buffering
             glfwSwapBuffers(window);
 
+            // Move main screen
+            FRAME += SCREEN_SPEED;
+            SCREEN_SPEED += SCREEN_ACCELERATION;
+
             engine.collider();
             engine.tick();
             engine.tick_input(window);
 
-            FRAME += SCREEN_SPEED;
-            SCREEN_SPEED += SCREEN_ACCELERATION;
         }
 
         // Poll for Keyboard and mouse events

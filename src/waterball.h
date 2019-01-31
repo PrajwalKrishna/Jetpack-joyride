@@ -12,7 +12,6 @@ public:
     float rotation;
     void draw(glm::mat4 VP);
     void set_position(float x, float y);
-    void die();
     void tick();
     double speed;
     bounding_box_t box();

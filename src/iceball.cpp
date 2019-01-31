@@ -41,12 +41,12 @@ void Iceball::set_position(float x, float y) {
 void Iceball::tick() {
     // Y axis
     this->position += SCREEN_SPEED;
-    if(this->position.y == GRAVE)
+    if(this->position.y == -100)
         return;
     if(this->position.y >= CEILING - height/2.0f)
-        this->position.y = GRAVE;
+        this->position.y = -100;
     else if(this->position.y <= FLOOR + height/2.0f)
-        this->position.y = GRAVE;
+        this->position.y = -100;
     else
         this->position.y += this->speed_y;
 
